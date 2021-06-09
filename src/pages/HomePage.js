@@ -17,7 +17,7 @@ import { Layout, CardHeader } from "../components/partials";
 //     ]}
 // />
 
-export default function Home(props) {
+export default function HomePage(props) {
   return (
     <Layout>
       <CardHeader title="Anasayfa" />

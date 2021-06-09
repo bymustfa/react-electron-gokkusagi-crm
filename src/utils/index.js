@@ -43,6 +43,20 @@ export const menus = [
 
   {
     id: Math.floor(Math.random() * 9999),
+    icon: <i className="fas fa-box" />,
+    title: "Satış Yönetim",
+    open: false,
+    child: [
+      {
+        id: Math.floor(Math.random() * 9999),
+        href: "/orders",
+        title: "Sipariş Listesi",
+      },
+    ],
+  },
+
+  {
+    id: Math.floor(Math.random() * 9999),
     icon: <i className="far fa-list-alt" />,
     open: false,
     title: "Yönetim",

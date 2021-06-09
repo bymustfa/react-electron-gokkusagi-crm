@@ -5,13 +5,12 @@ import { Menu } from "./index";
 export default function MenuMobile({ toggleProp, menuToggle }) {
   return (
     <div id="kt_header_mobile" className="header-mobile header-mobile-fixed">
-      <a href="index.html">
-        <img
-          alt="Logo"
-          src="https://litesoft.com.tr/assets/img/litesoft-logo.png"
-          className="logo-default max-h-30px"
-        />
-      </a>
+      <img
+        alt="Logo"
+        src="https://litesoft.com.tr/assets/img/litesoft-logo.png"
+        className="logo-default max-h-30px"
+      />
+
       <div className="d-flex align-items-center">
         <Button
           type="base"
