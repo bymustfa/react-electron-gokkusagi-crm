@@ -1,15 +1,16 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import "./styles/style.bundle.min.css";
+import { Route, Switch } from "react-router-dom";
+import "./styles/style.scss";
+
 import Home from "./pages/Home";
-import Order from "./pages/Order";
+import Customers from "./pages/Customers";
 
 function App() {
   return (
     <main>
       <Switch>
         <Route path="/" component={Home} exact />
-        <Route path="/siparis" component={Order} exact />
+        <Route path="/customers" component={Customers} exact />
       </Switch>
     </main>
   );

@@ -51,6 +51,15 @@ export const DarkButton = ({ text, onClick, className, icon }) => {
   );
 };
 
+export const BaseButton = ({ text, onClick, className, icon }) => {
+  return (
+    <button className={cn(["btn", className])} onClick={onClick}>
+      {icon && icon}
+      {text}
+    </button>
+  );
+};
+
 export default function Button({
   text,
   onClick,
@@ -114,6 +123,16 @@ export default function Button({
     case "dark":
       return (
         <DarkButton
+          text={text}
+          onClick={onClick}
+          className={className}
+          icon={icon}
+        />
+      );
+      break;
+    case "base":
+      return (
+        <BaseButton
           text={text}
           onClick={onClick}
           className={className}

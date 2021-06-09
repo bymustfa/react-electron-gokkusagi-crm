@@ -1,9 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "../styles/plugins/fullcalendar.bundle.css";
 
-import { Button } from "../components/base";
+import { Layout, CardHeader } from "../components/partials";
 
+//import "../styles/plugins/fullcalendar.bundle.css";
 // import FullCalendar from "@fullcalendar/react";
 // import dayGridPlugin from "@fullcalendar/daygrid";
 // <FullCalendar
@@ -19,13 +18,9 @@ import { Button } from "../components/base";
 // />
 
 export default function Home(props) {
-  console.log("Home Page Load");
   return (
-    <div>
-      <h1>Anasyafa </h1>
-      <Link to="/siparis"> Sipariş Sayfası </Link>
-      <Button text="Deneme" onClick={() => alert("Tıklandı")} />
-      <Button text="Deneme" type="dark" onClick={() => alert("Tıklandı")} />
-    </div>
+    <Layout>
+      <CardHeader title="Anasayfa" />
+    </Layout>
   );
 }
