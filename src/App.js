@@ -13,6 +13,7 @@ import {
   UsersPage,
   ParametersPage,
   BulutfonPage,
+  LoginPage,
 } from "./pages";
 
 // import HomePage from "./pages/HomePage";
@@ -20,9 +21,10 @@ import {
 
 function App() {
   return (
-    <main>
+    <main style={{ minHeight: "100%" }}>
       <Switch>
         <Route path="/" component={HomePage} exact />
+        <Route path="/login" component={LoginPage} exact />
         <Route path="/customers" component={CustomersPage} exact />
         <Route path="/visits" component={VisitsPage} exact />
         <Route path="/activities" component={ActivitiesPage} exact />

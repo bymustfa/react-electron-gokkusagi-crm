@@ -1,1 +1,16 @@
 @import 'plugins/plugins', 'base';
+
+#root {
+  min-height: 100% !important;
+}
+
+
+#login-img-area {
+  background-image: url("/img/login-visual-1.svg");
+}
+
+@media (max-width: 992px) {
+  #login-left-area {
+    display: none !important;
+  }
+}

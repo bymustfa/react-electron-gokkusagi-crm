@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 import { Layout, CardHeader } from "../components/partials";
 
 //import "../styles/plugins/fullcalendar.bundle.css";
@@ -21,6 +21,7 @@ export default function HomePage(props) {
   return (
     <Layout>
       <CardHeader title="Anasayfa" />
+      <Link to="login">Login</Link>
     </Layout>
   );
 }

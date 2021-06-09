@@ -8,3 +8,4 @@ export { default as OrdersPage } from "./OrdersPage";
 export { default as UsersPage } from "./UsersPage";
 export { default as ParametersPage } from "./ParametersPage";
 export { default as BulutfonPage } from "./BulutfonPage";
+export { default as LoginPage } from "./LoginPage";
