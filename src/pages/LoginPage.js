@@ -119,7 +119,7 @@ export default function LoginPage() {
                     placeholder="Şifre"
                     aria-invalid={errors.password ? "true" : "false"}
                     {...register("password", {
-                      required: "required",
+                      required: "Zorunlu Alan",
                       minLength: {
                         value: 5,
                         message: "Minimum 5 karakter",

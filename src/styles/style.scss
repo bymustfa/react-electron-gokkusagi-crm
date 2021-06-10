@@ -1,4 +1,4 @@
-@import 'plugins/plugins', 'base';
+@import 'plugins/plugins', 'plugins/fullcalendar', 'base';
 
 #root {
   min-height: 100% !important;
@@ -13,4 +13,25 @@
   #login-left-area {
     display: none !important;
   }
+}
+
+
+
+
+.fc-daygrid-day-number {
+  background: #eaeaea;
+  width: 100%;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  font-weight: bold;
+  text-align: right;
+
+  &:hover {
+    background: #cecece;
+
+  }
+}
+
+.fc-daygrid-event {
+  cursor: pointer;
 }

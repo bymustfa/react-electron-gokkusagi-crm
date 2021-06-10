@@ -16,9 +16,6 @@ import {
   LoginPage,
 } from "./pages";
 
-// import HomePage from "./pages/HomePage";
-// import CustomersPage from "./pages/CustomersPage";
-
 function App() {
   return (
     <main style={{ minHeight: "100%" }}>
