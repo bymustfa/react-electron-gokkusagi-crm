@@ -9,8 +9,6 @@ export default function LiteTable({ dumyData }) {
     }
   }, [dumyData]);
 
-  console.log(datas);
-
   return (
     <>
       <div className="datatable datatable-bordered datatable-head-custom datatable-default datatable-primary datatable-loaded table-responsive  ">
