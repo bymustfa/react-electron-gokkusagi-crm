@@ -33,6 +33,7 @@ export default function Input({
           required={required}
           onChange={onChange}
           disabled={disabled}
+          defaultValue={value}
         />
       )}
     </div>

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "../base";
-import { Menu } from "./index";
 
 export default function MenuMobile({ toggleProp, menuToggle }) {
   return (

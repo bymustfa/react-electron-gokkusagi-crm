@@ -132,96 +132,85 @@ export default function Button({
   className,
   icon,
 }) {
-  switch (type) {
-    case "primary":
-      return (
-        <PrimaryButton
-          text={text}
-          onClick={onClick}
-          className={className}
-          icon={icon}
-          buttonType={buttonType}
-        />
-      );
-      break;
-
-    case "secondary":
-      return (
-        <SecondaryButton
-          text={text}
-          onClick={onClick}
-          className={className}
-          icon={icon}
-          buttonType={buttonType}
-        />
-      );
-      break;
-
-    case "success":
-      return (
-        <SuccessButton
-          text={text}
-          onClick={onClick}
-          className={className}
-          icon={icon}
-          buttonType={buttonType}
-        />
-      );
-      break;
-    case "warning":
-      return (
-        <WarningButton
-          text={text}
-          onClick={onClick}
-          className={className}
-          icon={icon}
-          buttonType={buttonType}
-        />
-      );
-      break;
-    case "info":
-      return (
-        <InfoButton
-          text={text}
-          onClick={onClick}
-          className={className}
-          icon={icon}
-          buttonType={buttonType}
-        />
-      );
-      break;
-    case "light":
-      return (
-        <LightButton
-          text={text}
-          onClick={onClick}
-          className={className}
-          icon={icon}
-          buttonType={buttonType}
-        />
-      );
-      break;
-    case "dark":
-      return (
-        <DarkButton
-          text={text}
-          onClick={onClick}
-          className={className}
-          icon={icon}
-          buttonType={buttonType}
-        />
-      );
-      break;
-    case "base":
-      return (
-        <BaseButton
-          text={text}
-          onClick={onClick}
-          className={className}
-          icon={icon}
-          buttonType={buttonType}
-        />
-      );
-      break;
+  if (type === "primary") {
+    return (
+      <PrimaryButton
+        text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
+  } else if (type === "secondary") {
+    return (
+      <SecondaryButton
+        text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
+  } else if (type === "success") {
+    return (
+      <SuccessButton
+        text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
+  } else if (type === "warning") {
+    return (
+      <WarningButton
+        text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
+  } else if (type === "info") {
+    return (
+      <InfoButton
+        text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
+  } else if (type === "light") {
+    return (
+      <LightButton
+        text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
+  } else if (type === "dark") {
+    return (
+      <DarkButton
+        text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
+  } else if (type === "base") {
+    return (
+      <BaseButton
+        text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
   }
 }

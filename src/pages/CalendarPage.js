@@ -1,20 +1,8 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { Layout, CardHeader } from "../components/partials";
 import { Button } from "../components/base";
 
 export default function CalendarPage() {
-  const [customers, setCustomers] = useState([]);
-
-  useEffect(() => {
-    axios.get(process.env.REACT_APP_API_URL + "customers").then((response) => {
-      if (response.status === 200) {
-        const { data } = response;
-        setCustomers(data);
-      }
-    });
-  }, []);
-
   return (
     <Layout>
       <CardHeader

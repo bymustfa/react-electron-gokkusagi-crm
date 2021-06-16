@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "../base";
 
 export default function CardHeader({ title, description, buttons }) {
   return (

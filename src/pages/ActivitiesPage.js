@@ -1,20 +1,9 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+
 import { Layout, CardHeader } from "../components/partials";
 import { Button, LiteTable } from "../components/base";
 
 export default function ActivitiesPage() {
-  const [customers, setCustomers] = useState([]);
-
-  useEffect(() => {
-    axios.get(process.env.REACT_APP_API_URL + "customers").then((response) => {
-      if (response.status === 200) {
-        const { data } = response;
-        setCustomers(data);
-      }
-    });
-  }, []);
-
   return (
     <Layout>
       <CardHeader
@@ -44,7 +33,7 @@ export default function ActivitiesPage() {
       />
 
       <div className="border rounded p-4">
-        <LiteTable dumyData={customers} />
+        <LiteTable />
       </div>
     </Layout>
   );

@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Button from "./button";
 
-export default function LiteTable({ dumyData }) {
-  const [datas, setDatas] = useState([]);
-  useEffect(() => {
-    if (dumyData) {
-      setDatas(dumyData);
-    }
-  }, [dumyData]);
-
+export default function LiteTable() {
   return (
     <>
       <div className="datatable datatable-bordered datatable-head-custom datatable-default datatable-primary datatable-loaded table-responsive  ">
@@ -52,24 +45,22 @@ export default function LiteTable({ dumyData }) {
         <div className="datatable-pager datatable-paging-loaded">
           <ul className="datatable-pager-nav mb-5 mb-sm-0">
             <li>
-              <a
+              <span
                 title="First"
                 className="datatable-pager-link datatable-pager-link-first datatable-pager-link-disabled"
-                data-page="1"
-                disabled="disabled"
               >
                 <i className="flaticon2-fast-back" />
-              </a>
+              </span>
             </li>
             <li>
-              <a
+              <span
                 title="Previous"
                 className="datatable-pager-link datatable-pager-link-prev datatable-pager-link-disabled"
                 data-page="1"
                 disabled="disabled"
               >
                 <i className="flaticon2-back" />
-              </a>
+              </span>
             </li>
             <li />
             <li style={{ display: "none" }}>
@@ -99,22 +90,22 @@ export default function LiteTable({ dumyData }) {
             </li>
 
             <li>
-              <a
+              <span
                 title="Next"
                 className="datatable-pager-link datatable-pager-link-next"
                 data-page="2"
               >
                 <i className="flaticon2-next" />
-              </a>
+              </span>
             </li>
             <li>
-              <a
+              <span
                 title="Last"
                 className="datatable-pager-link datatable-pager-link-last"
                 data-page="10"
               >
                 <i className="flaticon2-fast-next" />
-              </a>
+              </span>
             </li>
           </ul>
 

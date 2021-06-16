@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import cn from "classnames";
 import { menus } from "../../utils/";
@@ -6,6 +6,7 @@ import { menus } from "../../utils/";
 export default function Menu({ toggleProp, menuToggle }) {
   const [toggle, setToggle] = useState(false);
   const [menuDatas, setMenuDatas] = useState([]);
+
   useEffect(() => {
     setToggle(toggleProp);
   }, [toggleProp]);

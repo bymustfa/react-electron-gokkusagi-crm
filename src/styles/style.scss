@@ -1,5 +1,8 @@
 @import 'plugins/plugins', 'plugins/fullcalendar', 'base';
 
+$mainColor: #f64e60;
+$mainColorOpacity: rgba(246, 78, 96, 0.1);
+
 #root {
   min-height: 100% !important;
 }
@@ -15,9 +18,15 @@
   }
 }
 
+.toogleCloseBtn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 55;
+}
 
-.modal-body{
-  background-color: transparent!important;
+.modal-body {
+  background-color: transparent !important;
 }
 
 .fc-daygrid-day-number {
@@ -36,4 +45,63 @@
 
 .fc-daygrid-event {
   cursor: pointer;
+}
+
+
+.search-box {
+  position: relative;
+
+  label {
+    width: 100%;
+  }
+
+  .search-input {
+    position: relative;
+    input{
+      cursor: pointer;
+    }
+
+    i {
+      position: absolute;
+      right: 10px;
+      top: 12px;
+    }
+  }
+
+  .show {
+    display: block;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  .list-area {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 40px;
+    z-index: 999;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 3px 28px -15px rgba(0, 0, 0, 0.75);
+
+    li {
+      padding: 5px 10px;
+      border-bottom: 1px solid #d9d8d8;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $mainColorOpacity;
+      }
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+  }
 }
