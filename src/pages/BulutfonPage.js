@@ -7,7 +7,7 @@ export default function BulutfonPage() {
   return (
     <Layout>
       <CardHeader
-        title="Bulutfon"
+        title="Santral"
         description="Yönetim"
         buttons={[
           <Button

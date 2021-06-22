@@ -16,19 +16,23 @@ export default function SelectBox({
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    if (selected) {
+    if (selected && options) {
       const tm = options.find((x) => x.value === selected);
-      setSearchText(tm.name);
+      setSearchText(tm?.name || "");
+      onChange(tm?.value || "");
     }
-  }, [selected]);
+  }, [selected, options]);
 
   useEffect(() => {
-    setOptionDatas(options);
-    setSearchText(options[0].name);
-    onChange(options[0]);
+    if (!selected) {
+      setOptionDatas(options);
+      setSearchText(options[0]?.name || "");
+      onChange(options[0]);
+    }
   }, [options]);
 
   const fuzzySearch = (val) => {
+    val = val.toLocaleLowerCase();
     const op = {
       threshold: 0.3,
       keys: ["name", "value"],
@@ -64,7 +68,7 @@ export default function SelectBox({
               onFocus={() => {
                 setFocus(true);
               }}
-              onBlur={() => setTimeout(() => setFocus(false), 200)}
+              onBlur={() => setTimeout(() => setFocus(false), 100)}
             />
             <span>
               <i className="fas fa-angle-down" />

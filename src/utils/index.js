@@ -74,8 +74,8 @@ export const menus = [
 
       {
         id: Math.floor(Math.random() * 9999),
-        href: "/bulutfon",
-        title: "Bulutfon",
+        href: "/santral",
+        title: "Santral",
       },
     ],
   },

@@ -1,53 +1,74 @@
-import React from "react";
-import Button from "./button";
+import React, { useState } from "react";
+import cn from "classnames";
 
-export default function LiteTable() {
+export default function LiteTable({
+  headers = [],
+  columns,
+  activePage = 0,
+  pageLength = 0,
+  pages = 0,
+  start = 0,
+  end = 0,
+  total = 0,
+  selectPageSize = [10, 25, 50, 100, 200],
+  pageLenChange,
+  pageChange,
+}) {
   return (
     <>
-      <div className="datatable datatable-bordered datatable-head-custom datatable-default datatable-primary datatable-loaded table-responsive  ">
+      <div className="datatable datatable-bordered datatable-head-custom datatable-default datatable-primary datatable-loaded table-responsive ">
         <table
-          className="datatable-table table"
+          className="datatable-table table table-hover  table-striped"
           style={{ display: "block", width: "100%" }}
         >
           <thead className="datatable-head">
             <tr className="datatable-row">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((data) => (
-                <th className="datatable-cell datatable-cell-sort" key={data}>
-                  <span style={{ width: "137px" }}>Head {data}</span>
+              {headers.map((data) => (
+                <th
+                  className="datatable-cell datatable-cell-sort p-0 py-2"
+                  key={Math.floor(Math.random() * 99999)}
+                >
+                  <span
+                    style={
+                      data.width ? { width: data.width } : { width: "137px" }
+                    }
+                  >
+                    {data.title}
+                  </span>
                 </th>
               ))}
             </tr>
           </thead>
 
-          <tbody className="datatable-body">
-            {[1, 2, 3, 4, 5].map((rw) => (
-              <tr className="datatable-row " key={rw}>
-                {[1, 2, 3, 4, 5, 6, 7].map((data) => (
-                  <td className="datatable-cell" key={data}>
-                    <span style={{ width: "137px" }}>Column {data}</span>
+          <tbody className="datatable-body border-right border-left">
+            {columns.map((column) => (
+              <tr className="datatable-row " key={column.Id}>
+                {headers.map((head) => (
+                  <td
+                    className="datatable-cell p-1"
+                    key={Math.floor(Math.random() * 99999)}
+                  >
+                    <span
+                      style={
+                        head.width ? { width: head.width } : { width: "137px" }
+                      }
+                    >
+                      {head.render ? head.render(column) : column[head.key]}
+                    </span>
                   </td>
                 ))}
-
-                <td className="datatable-cell">
-                  <span style={{ width: "137px" }}>
-                    <Button
-                      icon={<i className="fa fa-cog" />}
-                      text="İşlemler"
-                      type="base"
-                      className="p-0 text-hover-primary"
-                    />
-                  </span>
-                </td>
               </tr>
             ))}
           </tbody>
         </table>
+
         <div className="datatable-pager datatable-paging-loaded">
           <ul className="datatable-pager-nav mb-5 mb-sm-0">
             <li>
               <span
-                title="First"
-                className="datatable-pager-link datatable-pager-link-first datatable-pager-link-disabled"
+                title="İlk"
+                className="datatable-pager-link datatable-pager-link-first"
+                onClick={() => pageChange(1)}
               >
                 <i className="flaticon2-fast-back" />
               </span>
@@ -55,9 +76,10 @@ export default function LiteTable() {
             <li>
               <span
                 title="Previous"
-                className="datatable-pager-link datatable-pager-link-prev datatable-pager-link-disabled"
-                data-page="1"
-                disabled="disabled"
+                className="datatable-pager-link datatable-pager-link-prev "
+                onClick={() =>
+                  pageChange(activePage - 1 >= 1 ? activePage - 1 : 1)
+                }
               >
                 <i className="flaticon2-back" />
               </span>
@@ -70,39 +92,85 @@ export default function LiteTable() {
                 title="Page number"
               />
             </li>
-            <li>
-              <span
-                className="datatable-pager-link datatable-pager-link-number datatable-pager-link-active"
-                data-page="1"
-                title="1"
-              >
-                1
-              </span>
-            </li>
-            <li>
-              <span
-                className="datatable-pager-link datatable-pager-link-number"
-                data-page="2"
-                title="2"
-              >
-                2
-              </span>
-            </li>
+
+            {pages > 5
+              ? [...Array(5)].map((el, index) => {
+                  index += 1;
+                  return (
+                    <li key={index}>
+                      <span
+                        className={cn([
+                          "datatable-pager-link datatable-pager-link-number",
+                          activePage === index && "datatable-pager-link-active",
+                        ])}
+                        title={index}
+                        onClick={() => pageChange(index)}
+                      >
+                        {index}
+                      </span>
+                    </li>
+                  );
+                })
+              : [...Array(pages)].map((el, index) => {
+                  index += 1;
+                  return (
+                    <li key={index}>
+                      <span
+                        className={cn([
+                          "datatable-pager-link datatable-pager-link-number",
+                          activePage === index && "datatable-pager-link-active",
+                        ])}
+                        title={index}
+                      >
+                        {index}
+                      </span>
+                    </li>
+                  );
+                })}
+
+            {pages > 5 ? (
+              <>
+                <li>
+                  <span
+                    className="datatable-pager-link datatable-pager-link-number disabled"
+                    title="..."
+                  >
+                    ...
+                  </span>
+                </li>
+                <li>
+                  <span
+                    className={cn([
+                      "datatable-pager-link datatable-pager-link-number",
+                      activePage === pages && "datatable-pager-link-active",
+                    ])}
+                    title={pages}
+                    onClick={() => pageChange(pages)}
+                  >
+                    {pages}
+                  </span>
+                </li>
+              </>
+            ) : (
+              ""
+            )}
 
             <li>
               <span
-                title="Next"
+                title="Sonraki"
                 className="datatable-pager-link datatable-pager-link-next"
-                data-page="2"
+                onClick={() =>
+                  pageChange(activePage + 1 <= pages ? activePage + 1 : pages)
+                }
               >
                 <i className="flaticon2-next" />
               </span>
             </li>
             <li>
               <span
-                title="Last"
+                title="Son"
                 className="datatable-pager-link datatable-pager-link-last"
-                data-page="10"
+                onClick={() => pageChange(pages)}
               >
                 <i className="flaticon2-fast-next" />
               </span>
@@ -110,16 +178,20 @@ export default function LiteTable() {
           </ul>
 
           <div className="datatable-pager-info">
-            <select className="form-control w-65px mr-3">
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="30">30</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
+            <select
+              className="form-control w-65px mr-3"
+              value={pageLength}
+              onChange={(e) => pageLenChange(e.target.value)}
+            >
+              {selectPageSize.map((data) => (
+                <option value={data} key={data}>
+                  {data}
+                </option>
+              ))}
             </select>
             <span className="datatable-pager-detail">
-              ... adet kayıttan ... ile ... arası kayıt gösteriliyor
+              <b>{total}</b> adet kayıttan <b>{start}</b> ile <b>{end}</b> arası
+              kayıt gösteriliyor
             </span>
           </div>
         </div>

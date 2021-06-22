@@ -10,25 +10,6 @@ export default function Tabs({
   modalClose,
 }) {
   const [activeId, setActiveId] = useState(1);
-  // const setActiveTab = (id) => {
-  //   tabs = tabs.map((x) => {
-  //     if (x.id === id) {
-  //       x.active = true;
-  //     } else {
-  //       x.active = false;
-  //     }
-  //     return x;
-  //   });
-  //
-  //   contents = contents.map((x) => {
-  //     if (x.id === id) {
-  //       x.active = true;
-  //     } else {
-  //       x.active = false;
-  //     }
-  //     return x;
-  //   });
-  // };
 
   return (
     <>
@@ -66,7 +47,6 @@ export default function Tabs({
                       text: "Kapatmak İstediğinize Emin misiniz?",
                       buttons: ["İptal", "Evet, Kapat"],
                     }).then(function (result) {
-                      console.log(result);
                       if (result) {
                         modalClose.set(false);
                       }

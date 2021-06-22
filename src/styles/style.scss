@@ -57,7 +57,8 @@ $mainColorOpacity: rgba(246, 78, 96, 0.1);
 
   .search-input {
     position: relative;
-    input{
+
+    input {
       cursor: pointer;
     }
 
@@ -105,3 +106,78 @@ $mainColorOpacity: rgba(246, 78, 96, 0.1);
     }
   }
 }
+
+.btn-show-password {
+  position: absolute;
+  right: 10px;
+  bottom: 24px;
+}
+
+.address-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    padding: 10px 20px;
+    background-color: white;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: all 120ms;
+
+    &:hover {
+      box-shadow: 0 6px 34px -22px rgba(0, 0, 0, 0.75);
+    }
+  }
+}
+
+
+.users-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    padding: 10px 20px;
+    background-color: white;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: all 120ms;
+
+    &:hover {
+      box-shadow: 0 6px 34px -22px rgba(0, 0, 0, 0.75);
+    }
+  }
+}
+
+.file-uploader {
+  width: 100%;
+  border: 2px dashed #b3b0b0;
+  cursor: pointer;
+
+}
+
+
+.dropdown-checbox {
+  opacity: 0;
+  & + .dropdown-menu {
+    transition: all 120ms;
+    right: 20px;
+  }
+
+  &:checked {
+    & + .dropdown-menu {
+      display: block;
+    }
+  }
+
+  &:not(:focus) {
+    & + .dropdown-menu {
+      display: none;
+    }
+  }
+}
+
+

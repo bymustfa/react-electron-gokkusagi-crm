@@ -30,7 +30,7 @@ function App() {
         <Route path="/orders" component={OrdersPage} exact />
         <Route path="/users" component={UsersPage} exact />
         <Route path="/parameters" component={ParametersPage} exact />
-        <Route path="/bulutfon" component={BulutfonPage} exact />
+        <Route path="/santral" component={BulutfonPage} exact />
       </Switch>
     </main>
   );

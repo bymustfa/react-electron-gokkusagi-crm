@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, SelectBox, Switch } from "../components/base";
+import axios from "axios";
+
 import { useSelector, useDispatch } from "react-redux";
-import { setState, SelectCustomers } from "../features/customers/customerSlice";
+import { configureStore } from "@reduxjs/toolkit";
+import { Button, Input, SelectBox, Switch } from "../components/base";
+
+import {
+  setState,
+  setAddressAdd,
+  setUsersAdd,
+  SelectCustomers,
+} from "../features/customers/customerSlice";
+
 import {
   setCountries,
   setProvinces,
@@ -11,10 +21,15 @@ import {
   setProvinceId,
   setDistrictId,
   setNeighborhoodId,
+  setAddressState,
   SelectAddres,
-} from "../features/addres/addreslice";
+} from "../features/customers/addreslice";
 
-import axios from "axios";
+import { setUsersState, SelectUser } from "../features/customers/userSlice";
+import {
+  setCustomerPasswordState,
+  SelectCustomerPassword,
+} from "../features/customers/customerPasswordsSlice";
 
 import {
   getCountries,
@@ -39,14 +54,29 @@ export const CustomersTabs = [
     icon: <i className="fas fa-users" />,
     title: "Yetkililer",
   },
+
+  {
+    id: 4,
+    icon: <i className="fas fa-lock" />,
+    title: "Bilgiler",
+  },
 ];
 
 export const CustomersContents = () => {
   const customerDatas = useSelector(SelectCustomers);
   const addresDatas = useSelector(SelectAddres);
-
+  const userDatas = useSelector(SelectUser);
+  const passwordDatas = useSelector(SelectCustomerPassword);
   const dispatch = useDispatch();
+
   const [addresAreaToogle, setAdresAreaToggle] = useState(false);
+  const [tmpAdresler, setTmpAdresler] = useState([]);
+  const [tmpUsers, setTmpUsers] = useState([]);
+
+  const passwordToggle = (key) => {
+    const status = !passwordDatas[key];
+    dispatch(setCustomerPasswordState({ key, value: status }));
+  };
 
   useEffect(() => {
     getCountries().then((x) => dispatch(setCountries(x)));
@@ -56,7 +86,7 @@ export const CustomersContents = () => {
   }, []);
 
   const handleDistricChange = (id) => {
-    console.log("ilçe id: ", id);
+    getNeighborhoods(id).then((x) => dispatch(setNeighborhoods(x)));
   };
 
   const handleProvinceChange = (id) => {
@@ -66,7 +96,43 @@ export const CustomersContents = () => {
     });
   };
 
-  console.log(addresDatas);
+  const addToAddres = () => {
+    const { Adresler } = customerDatas;
+    const sort = Adresler.length + 1;
+    dispatch(
+      setAddressAdd({
+        Ulke: addresDatas.tmpcountryText,
+        Il: addresDatas.tmpprovinceText,
+        Ilce: addresDatas.tmpdistrictText,
+        Semt: addresDatas.tmpneighborhoodText,
+        Baslik: addresDatas.addressTitle,
+        Mahalle: addresDatas.neighborhoodText,
+        Cadde: addresDatas.avenueText,
+        Sokak: addresDatas.streetText,
+        blokNo: addresDatas.blockNo,
+        ApartmanNo: addresDatas.buildNo,
+        DaireNo: addresDatas.apartNo,
+        Kat: addresDatas.floor,
+        Aciklama: addresDatas.note,
+        Durum: addresDatas.status,
+        Sira: sort,
+      })
+    );
+    setTmpAdresler(customerDatas.Adresler);
+  };
+
+  const addToUsers = () => {
+    dispatch(
+      setUsersAdd({
+        Ad: userDatas.Ad,
+        Soyad: userDatas.Soyad,
+        Mail: userDatas.Mail,
+        Telefon: userDatas.Telefon,
+        Durum: true,
+      })
+    );
+    setTmpUsers(customerDatas.Kisiler);
+  };
 
   return [
     {
@@ -105,9 +171,17 @@ export const CustomersContents = () => {
                 )
               }
             />
+
             <SelectBox
               parentClass="col-md-3"
               label="Satış Temsilcisi"
+              selected={customerDatas.SatisTemsilcisiId}
+              options={[
+                { value: "", name: "Şeçiniz" },
+                { value: 1, name: "Tems 1" },
+                { value: 2, name: "Tems 2" },
+                { value: 3, name: "Tems 3" },
+              ]}
               onChange={(e) => {
                 dispatch(
                   setState({
@@ -116,11 +190,6 @@ export const CustomersContents = () => {
                   })
                 );
               }}
-              selected={customerDatas.SatisTemsilcisiId}
-              options={[
-                { value: 1, name: "daneme" },
-                { value: 2, name: "daneme2" },
-              ]}
             />
 
             <SelectBox
@@ -294,15 +363,23 @@ export const CustomersContents = () => {
         <>
           <div className="row">
             <div className="col-md-8 mx-auto bg-light border rounded p-2">
-              {customerDatas.Adresler.length > 0 ? (
-                customerDatas.Adresler.map((adres) => (
-                  <h1>{JSON.stringify(adres)}</h1>
-                ))
-              ) : (
-                <div className="p-2 border rounded shadow mb-6 text-center text-black-50">
-                  <h1>Adres Yok</h1>
-                </div>
-              )}
+              <ul className="address-list">
+                {tmpAdresler.length > 0 ? (
+                  tmpAdresler
+                    .slice()
+                    .sort((a, b) => (a.Sira > b.Sira ? 1 : -1))
+                    .map((adres) => (
+                      <li key={adres.Sira}>
+                        <b>{adres.Sira}-)</b> {adres.Baslik} |
+                        {" " + adres.Il + " " + adres.Ilce + " " + adres.Semt}
+                      </li>
+                    ))
+                ) : (
+                  <div className="p-2 border rounded shadow mb-6 text-center text-black-50">
+                    <h1>Adres Yok</h1>
+                  </div>
+                )}{" "}
+              </ul>
 
               <div className="text-center">
                 <Button
@@ -332,15 +409,25 @@ export const CustomersContents = () => {
                 parentClass="col-md-3"
                 label="Ülke"
                 options={addresDatas.countries}
-                onChange={(e) => dispatch(setCountryId(e.value))}
                 selected={addresDatas.countryId}
+                onChange={(e) => {
+                  dispatch(setCountryId(e.value));
+                  dispatch(
+                    setAddressState({ key: "tmpcountryText", value: e.name })
+                  );
+                }}
               />
 
               <SelectBox
                 parentClass="col-md-3"
                 label="İl"
                 options={addresDatas.provinces}
-                onChange={(x) => handleProvinceChange(x.value)}
+                onChange={(e) => {
+                  handleProvinceChange(e.value);
+                  dispatch(
+                    setAddressState({ key: "tmpprovinceText", value: e.name })
+                  );
+                }}
                 selected={addresDatas.provinceId}
               />
 
@@ -348,7 +435,12 @@ export const CustomersContents = () => {
                 parentClass="col-md-3"
                 label="İlçe"
                 options={addresDatas.districts}
-                onChange={(x) => handleDistricChange(x.value)}
+                onChange={(e) => {
+                  handleDistricChange(e.value);
+                  dispatch(
+                    setAddressState({ key: "tmpdistrictText", value: e.name })
+                  );
+                }}
                 selected={addresDatas.districtId}
               />
 
@@ -356,7 +448,15 @@ export const CustomersContents = () => {
                 parentClass="col-md-3"
                 label="Semt"
                 options={addresDatas.neighborhoods}
-                onChange={(x) => setNeighborhoodId(x.value)}
+                onChange={(e) => {
+                  setNeighborhoodId(e.value);
+                  dispatch(
+                    setAddressState({
+                      key: "tmpneighborhoodText",
+                      value: e.name,
+                    })
+                  );
+                }}
                 selected={addresDatas.neighborhoodId}
               />
             </div>
@@ -366,6 +466,15 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Adres Başlığı"
                 label="Adres Başlığı"
+                value={addresDatas.addressTitle}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "addressTitle",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
 
               <Input
@@ -373,6 +482,15 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Mahalle"
                 label="Mahalle"
+                value={addresDatas.neighborhoodText}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "neighborhoodText",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
 
               <Input
@@ -380,6 +498,15 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Cadde"
                 label="Cadde"
+                value={addresDatas.avenueText}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "avenueText",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
 
               <Input
@@ -387,6 +514,15 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Sokak"
                 label="Sokak"
+                value={addresDatas.streetText}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "streetText",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
             </div>
             <div className="row">
@@ -395,7 +531,15 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Blok No"
                 label="Blok No"
-                onChange={(e) => console.log(e)}
+                value={addresDatas.blockNo}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "blockNo",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
 
               <Input
@@ -403,7 +547,15 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Bina No"
                 label="Bina No"
-                onChange={(e) => console.log(e)}
+                value={addresDatas.buildNo}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "buildNo",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
 
               <Input
@@ -411,7 +563,15 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Daire No"
                 label="Daire No"
-                onChange={(e) => console.log(e)}
+                value={addresDatas.apartNo}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "apartNo",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
 
               <Input
@@ -419,7 +579,15 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Kat"
                 label="Kat"
-                onChange={(e) => console.log(e)}
+                value={addresDatas.floor}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "floor",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
             </div>
             <div className="row">
@@ -428,22 +596,36 @@ export const CustomersContents = () => {
                 type="text"
                 placeholder="Not"
                 label="Not"
-                onChange={(e) => console.log(e)}
+                value={addresDatas.note}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "note",
+                      value: e.target.value,
+                    })
+                  )
+                }
               />
 
               <Switch
                 parentClass="col-md-3"
                 label="Adres Durumu"
-                onChange={(e) => {
-                  console.log(e.target.checked);
-                }}
+                checked={addresDatas.status}
+                onChange={(e) =>
+                  dispatch(
+                    setAddressState({
+                      key: "status",
+                      value: e.target.checked,
+                    })
+                  )
+                }
               />
             </div>
             <div className="text-center">
               <Button
-                text="Adresi Ekle"
-                icon={<i className="fas fa-plus" />}
-                onClick={() => console.log("Adresi Ekle")}
+                text="Adresi Kaydet"
+                icon={<i className="fas fa-save" />}
+                onClick={() => addToAddres()}
               />
             </div>
           </div>
@@ -453,9 +635,242 @@ export const CustomersContents = () => {
     {
       id: 3,
       content: (
-        <div>
-          <h1> tab 3</h1>
-        </div>
+        <>
+          <div className="row">
+            <Input
+              placeholder="Ad"
+              label="Ad"
+              parentClass="col"
+              value={userDatas.Ad}
+              onChange={(e) =>
+                dispatch(setUsersState({ key: "Ad", value: e.target.value }))
+              }
+            />
+            <Input
+              placeholder="Soyad"
+              label="Soyad"
+              parentClass="col "
+              value={userDatas.Soyad}
+              onChange={(e) =>
+                dispatch(setUsersState({ key: "Soyad", value: e.target.value }))
+              }
+            />
+            <Input
+              placeholder="Telefon"
+              label="Telefon"
+              parentClass="col "
+              value={userDatas.Telefon}
+              onChange={(e) =>
+                dispatch(
+                  setUsersState({ key: "Telefon", value: e.target.value })
+                )
+              }
+            />
+            <Input
+              placeholder="Mail"
+              label="Mail"
+              parentClass="col"
+              value={userDatas.Mail}
+              onChange={(e) =>
+                dispatch(setUsersState({ key: "Mail", value: e.target.value }))
+              }
+            />
+            <div className="pt-7">
+              <Button
+                type="success"
+                text="Ekle"
+                className="btn-sm"
+                onClick={() => addToUsers()}
+              />
+            </div>
+          </div>
+          <hr />
+
+          <ul className="users-list">
+            {tmpUsers.length > 0 ? (
+              tmpUsers.map((item) => (
+                <li key={Math.floor(Math.random() * 9999)}>
+                  {item.Ad} {item.Soyad} |{item.Telefon} - {item.Mail}
+                </li>
+              ))
+            ) : (
+              <>Kişi Yok</>
+            )}
+          </ul>
+        </>
+      ),
+    },
+    {
+      id: 4,
+      content: (
+        <>
+          <div className="row">
+            <Input
+              label="Bakım Anlaşması:"
+              placeholder="Bakım Anlaşması :"
+              parentClass="col-md-3"
+              value={customerDatas.AnlasmaAdi}
+              onChange={(e) =>
+                dispatch(
+                  setState({
+                    key: "AnlasmaAdi",
+                    value: e.target.value,
+                  })
+                )
+              }
+            />
+
+            <Input
+              label="Bakım Anlaşması Bitiş Tarihi:"
+              placeholder="Bakım Anlaşması Bitiş Tarihi:"
+              type="date"
+              parentClass="col-md-3"
+              value={customerDatas.AnlasmaBitis}
+              onChange={(e) =>
+                dispatch(
+                  setState({
+                    key: "AnlasmaBitis",
+                    value: e.target.value,
+                  })
+                )
+              }
+            />
+            <Input
+              label="E-Mikro Mail"
+              placeholder="E-Mikro Mail"
+              parentClass="col-md-3"
+              value={customerDatas.EMikroKullanici}
+              onChange={(e) =>
+                dispatch(
+                  setState({
+                    key: "EMikroKullanici",
+                    value: e.target.value,
+                  })
+                )
+              }
+            />
+
+            <div className=" col-md-3  " style={{ position: "relative" }}>
+              <Input
+                label="E-Mikro Şifre"
+                placeholder="E-Mikro Şifre"
+                type={passwordDatas.mikro ? "text" : "password"}
+                childClass="pr-10"
+                value={customerDatas.EMikroSifre}
+                onChange={(e) =>
+                  dispatch(
+                    setState({
+                      key: "EMikroSifre",
+                      value: e.target.value,
+                    })
+                  )
+                }
+              />
+              <Button
+                className="btn-show-password"
+                type="icon"
+                onClick={() => passwordToggle("mikro")}
+                icon={
+                  passwordDatas.mikro ? (
+                    <i className="fas fa-eye-slash" />
+                  ) : (
+                    <i className="fas fa-eye" />
+                  )
+                }
+              />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className=" col-md-3  " style={{ position: "relative" }}>
+              <Input
+                label="Srv Şifre"
+                placeholder="Srv Şifre"
+                type={passwordDatas.srv ? "text" : "password"}
+                childClass="pr-10"
+                value={customerDatas.SrvSifre}
+                onChange={(e) =>
+                  dispatch(
+                    setState({
+                      key: "SrvSifre",
+                      value: e.target.value,
+                    })
+                  )
+                }
+              />
+              <Button
+                className="btn-show-password"
+                type="icon"
+                onClick={() => passwordToggle("srv")}
+                icon={
+                  passwordDatas.srv ? (
+                    <i className="fas fa-eye-slash" />
+                  ) : (
+                    <i className="fas fa-eye" />
+                  )
+                }
+              />
+            </div>
+
+            <Input
+              label="Akis PIN"
+              placeholder="Akis PIN"
+              parentClass="col-md-3"
+              value={customerDatas.AkisPin}
+              onChange={(e) =>
+                dispatch(
+                  setState({
+                    key: "AkisPin",
+                    value: e.target.value,
+                  })
+                )
+              }
+            />
+            <Input
+              label="Sunucu Giriş"
+              placeholder="Sunucu Giriş"
+              parentClass="col-md-3"
+              value={customerDatas.SunucuGiris}
+              onChange={(e) =>
+                dispatch(
+                  setState({
+                    key: "SunucuGiris",
+                    value: e.target.value,
+                  })
+                )
+              }
+            />
+            <div className=" col-md-3  " style={{ position: "relative" }}>
+              <Input
+                label="Sunucu Şifre"
+                placeholder="Sunucu Şifre"
+                type={passwordDatas.server ? "text" : "password"}
+                childClass="pr-10"
+                value={customerDatas.SunucuSifre}
+                onChange={(e) =>
+                  dispatch(
+                    setState({
+                      key: "SunucuSifre",
+                      value: e.target.value,
+                    })
+                  )
+                }
+              />
+              <Button
+                className="btn-show-password"
+                type="icon"
+                onClick={() => passwordToggle("server")}
+                icon={
+                  passwordDatas.server ? (
+                    <i className="fas fa-eye-slash" />
+                  ) : (
+                    <i className="fas fa-eye" />
+                  )
+                }
+              />
+            </div>
+          </div>
+        </>
       ),
     },
   ];

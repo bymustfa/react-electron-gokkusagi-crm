@@ -124,6 +124,18 @@ export const BaseButton = ({ text, onClick, className, icon, buttonType }) => {
   );
 };
 
+export const IconButton = ({ onClick, className, icon, buttonType }) => {
+  return (
+    <button
+      type={buttonType}
+      className={cn(["btn btn-icon", className])}
+      onClick={onClick}
+    >
+      {icon && icon}
+    </button>
+  );
+};
+
 export default function Button({
   text,
   onClick,
@@ -206,6 +218,15 @@ export default function Button({
     return (
       <BaseButton
         text={text}
+        onClick={onClick}
+        className={className}
+        icon={icon}
+        buttonType={buttonType}
+      />
+    );
+  } else if (type === "icon") {
+    return (
+      <IconButton
         onClick={onClick}
         className={className}
         icon={icon}

@@ -18,15 +18,38 @@ export const slice = createSlice({
     Aciklama: "",
     Adresler: [],
     Kisiler: [],
+
+    AnlasmaAdi: "",
+    AnlasmaBitis: "",
+    SrvSifre: "",
+    EMikroKullanici: "",
+    EMikroSifre: "",
+    AkisPin: "",
+    SunucuGiris: "",
+    SunucuSifre: "",
   },
   reducers: {
     setState: (state, action) => {
       state[action.payload.key] = action.payload.value;
     },
+
+    setAddressAdd: (state, action) => {
+      return {
+        ...state,
+        Adresler: [action.payload, ...state.Adresler],
+      };
+    },
+
+    setUsersAdd: (state, action) => {
+      return {
+        ...state,
+        Kisiler: [action.payload, ...state.Kisiler],
+      };
+    },
   },
 });
 
-export const { setState } = slice.actions;
+export const { setState, setAddressAdd, setUsersAdd } = slice.actions;
 
 export const SelectCustomers = (state) => state.customers;
 

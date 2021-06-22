@@ -7,10 +7,27 @@ export const slice = createSlice({
     provinces: [],
     districts: [],
     neighborhoods: [],
+
     countryId: 40,
     provinceId: 1,
     districtId: 1,
     neighborhoodId: 1,
+
+    tmpcountryText: "",
+    tmpprovinceText: "",
+    tmpdistrictText: "",
+    tmpneighborhoodText: "",
+
+    addressTitle: "",
+    neighborhoodText: "",
+    avenueText: "",
+    streetText: "",
+    blockNo: "",
+    buildNo: "",
+    apartNo: "",
+    floor: "",
+    note: "",
+    status: false,
   },
   reducers: {
     setCountries: (state, action) => {
@@ -38,6 +55,10 @@ export const slice = createSlice({
     setNeighborhoodId: (state, action) => {
       state.neighborhoodId = action.payload;
     },
+
+    setAddressState: (state, action) => {
+      state[action.payload.key] = action.payload.value;
+    },
   },
 });
 
@@ -50,6 +71,7 @@ export const {
   setProvinceId,
   setDistrictId,
   setNeighborhoodId,
+  setAddressState,
 } = slice.actions;
 
 export const SelectAddres = (state) => state.addres;
