@@ -31,9 +31,7 @@ export default function TasksPage() {
         ]}
       />
 
-      <div className="border rounded p-4">
-        <LiteTable />
-      </div>
+      <div className="border rounded p-4">{/*<LiteTable />*/}</div>
     </Layout>
   );
 }

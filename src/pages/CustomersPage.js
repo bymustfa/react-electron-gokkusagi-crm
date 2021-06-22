@@ -8,18 +8,25 @@ import {
   ActiviteNormalForm,
   TableDropdown,
 } from "../components/partials";
-import { Button, LiteTable } from "../components/base";
-
-import { CustomersTabs, CustomersContents } from "../utils/customerPageUtils";
+import { Button, LiteTable, Input, SelectBox } from "../components/base";
 
 import { SelectCustomers } from "../features/customers/customerSlice";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import cn from "classnames";
 
+import { CustomersTabs, CustomersContents } from "../utils/customerPageUtils";
+
+import {
+  getProvinces,
+  getDistricts,
+  getNeighborhoods,
+} from "../utils/parameters";
+
 export default function CustomersPage() {
   const [customerModalShow, setCustomerModalShow] = useState(false);
   const [activiteModalShow, setActiviteModalShow] = useState(false);
+  const [filterModalShow, setFilterModalShow] = useState(false);
   const [tablePage, setTablePage] = useState(1);
   const [tablePageLen, setTablePageLen] = useState(25);
   const [tableColumns, setTableColumns] = useState([]);
@@ -35,14 +42,33 @@ export default function CustomersPage() {
     total: 0,
   });
 
+  const [customerFilters, setCustomerFilters] = useState({
+    MusteriNo: "",
+    MusteriUnvan: "",
+    Telefon1: "",
+    Email: "",
+    Il: "",
+    Ilce: "",
+    Semt: "",
+  });
+
   const customersContents = CustomersContents();
   const customerDatas = useSelector(SelectCustomers);
 
-  const tableDataCall = () => {
+  const [province, setProvince] = useState([]);
+  const [filterProvince, setFilterProvince] = useState("");
+  const [district, setDistrict] = useState([]);
+  const [filterDistrict, setFilterDistrict] = useState("");
+  const [neighborhood, setNeighborhood] = useState([]);
+  const [filterNeighborhood, setFilterNeighborhood] = useState("");
+
+  const [filterStatus, setFilterStatus] = useState(false);
+
+  const tableDataCall = (filter = "") => {
     setTableColumns([]);
     const url =
       process.env.REACT_APP_API_URL +
-      `Musteri/GetMusteriTable?pageNumber=${tablePage}&pageSize=${tablePageLen}`;
+      `Musteri/GetMusteriTable?pageNumber=${tablePage}&pageSize=${tablePageLen}&filter=${filter}`;
     axios.get(url).then((response) => {
       if (response.status === 200) {
         const { data } = response;
@@ -63,7 +89,33 @@ export default function CustomersPage() {
 
   useEffect(() => {
     tableDataCall();
+
+    getProvinces(40).then((datas) =>
+      setProvince([{ value: "", name: "Seçiniz" }, ...datas])
+    );
   }, []);
+
+  useEffect(() => {
+    if (String(filterProvince).trim().length > 0) {
+      getDistricts(filterProvince).then((datas) =>
+        setDistrict([{ value: "", name: "Seçiniz" }, ...datas])
+      );
+    }
+  }, [filterProvince]);
+
+  useEffect(() => {
+    if (String(filterDistrict).trim().length > 0) {
+      getNeighborhoods(filterDistrict).then((datas) =>
+        setNeighborhood([{ value: "", name: "Seçiniz" }, ...datas])
+      );
+    }
+  }, [filterDistrict]);
+
+  useEffect(() => {
+    if (!customerModalShow) {
+      tableDataCall();
+    }
+  }, [customerModalShow]);
 
   useEffect(() => {
     tableDataCall();
@@ -92,6 +144,37 @@ export default function CustomersPage() {
     console.log(controlDatas, [...formData]);
   };
 
+  const setFilterState = (key, value) => {
+    const tmp = customerFilters;
+    tmp[key] = value;
+    setCustomerFilters(tmp);
+  };
+
+  const filterRemove = () => {
+    tableDataCall();
+    setFilterStatus(false);
+    const tmp = {};
+    Object.keys(customerFilters).map((data) => {
+      tmp[data] = "";
+    });
+    setCustomerFilters(tmp);
+  };
+
+  const customerFilterTable = () => {
+    let filter = "";
+    Object.keys(customerFilters).map((data) => {
+      const value = customerFilters[data].trim();
+      if (value.length > 0 && value !== "Seçiniz") {
+        filter += `or ${data} LIKE '$$${value}$$' `;
+      }
+    });
+    filter = filter.substr(3, filter.length).trim();
+
+    tableDataCall(filter);
+    setFilterModalShow(false);
+    setFilterStatus(true);
+  };
+
   return (
     <Layout>
       <CardHeader
@@ -108,13 +191,24 @@ export default function CustomersPage() {
               tableDataCall();
             }}
           />,
+          filterStatus && (
+            <Button
+              key={10}
+              text="Filtre Temizle"
+              className="mr-3 btn-sm"
+              icon={<i className="fas fa-trash-alt" />}
+              onClick={() => filterRemove()}
+            />
+          ),
           <Button
             key={2}
             text="Filtre"
             type="success"
             className="mr-3 btn-sm"
             icon={<i className="fas fa-filter" />}
+            onClick={() => setFilterModalShow(true)}
           />,
+
           <Button
             key={3}
             text="Yeni Ekle"
@@ -143,7 +237,6 @@ export default function CustomersPage() {
                       <span
                         className="navi-link cursor-pointer"
                         onClick={() => {
-                          console.log("Müşteri Id: ", column.Id);
                           setSelectedCustomerId(column.Id);
                           setActiviteModalShow(true);
                         }}
@@ -156,40 +249,6 @@ export default function CustomersPage() {
                     </li>
                   </TableDropdown>
                 );
-                // return (
-                //   <div className="position-relative">
-                //     <label
-                //       className="cursor-pointer"
-                //       htmlFor={"dropElement_" + column.Id}
-                //     >
-                //       <i className="fas fa-cog" /> İşlemler
-                //     </label>
-                //     <input
-                //       type="checkbox"
-                //       className="dropdown-checbox"
-                //       id={"dropElement_" + column.Id}
-                //     />
-                //
-                //     <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                //       <ul className="navi flex-column navi-hover py-2">
-                //         <li className="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
-                //           İşemler:
-                //         </li>
-                //         <li className="navi-item">
-                //           <span
-                //             className="navi-link cursor-pointer"
-                //             onClick={() => alert("asdasd")}
-                //           >
-                //             <span className="navi-icon">
-                //               <i className="la la-plus"></i>
-                //             </span>
-                //             <span className="navi-text">Faaliyet Gir</span>
-                //           </span>
-                //         </li>
-                //       </ul>
-                //     </div>
-                //   </div>
-                // );
               },
             },
           ]}
@@ -239,6 +298,107 @@ export default function CustomersPage() {
             selectedCustomerId={selectedCustomerId}
             handleActiviteSave={handleActiviteSave}
           />
+        </Modal.Body>
+      </Modal>
+
+      <Modal size="lg" show={filterModalShow} centered>
+        <Modal.Header>
+          <Modal.Title>Filtre</Modal.Title>
+          <button
+            type="button"
+            className="close ml-4"
+            onClick={() => setFilterModalShow(false)}
+          >
+            <i aria-hidden="true" className="ki ki-close" />
+          </button>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="row">
+            <Input
+              placeholder="Müşteri No"
+              label="Müşteri No"
+              parentClass="col-md-6"
+              value={customerFilters.MusteriNo}
+              onChange={(e) => setFilterState("MusteriNo", e.target.value)}
+            />
+
+            <Input
+              placeholder="Müşteri Ünvan"
+              label="Müşteri Ünvan"
+              parentClass="col-md-6"
+              value={customerFilters.MusteriUnvan}
+              onChange={(e) => setFilterState("MusteriUnvan", e.target.value)}
+            />
+          </div>
+
+          <div className="row">
+            <Input
+              placeholder="Telefon"
+              label="Telefon"
+              parentClass="col-md-6"
+              value={customerFilters.Telefon1}
+              onChange={(e) => setFilterState("Telefon1", e.target.value)}
+            />
+
+            <Input
+              placeholder="Mail"
+              label="Mail"
+              parentClass="col-md-6"
+              value={customerFilters.Email}
+              onChange={(e) => setFilterState("Email", e.target.value)}
+            />
+          </div>
+
+          <div className="row">
+            <SelectBox
+              parentClass="col-md-4"
+              label="İl"
+              selected={""}
+              options={province}
+              onChange={(e) => {
+                setFilterProvince(e.value);
+                setFilterState("Il", e.name);
+              }}
+            />
+
+            <SelectBox
+              parentClass="col-md-4"
+              label="İlçe"
+              selected={""}
+              options={
+                district.length > 0
+                  ? district
+                  : [{ value: "", name: "Seçiniz" }]
+              }
+              onChange={(e) => {
+                setFilterDistrict(e.value);
+                setFilterState("Ilce", e.name);
+              }}
+            />
+
+            <SelectBox
+              parentClass="col-md-4"
+              label="Semt"
+              selected={""}
+              options={
+                neighborhood.length > 0
+                  ? neighborhood
+                  : [{ value: "", name: "Seçiniz" }]
+              }
+              onChange={(e) => {
+                setFilterNeighborhood(e.value);
+                setFilterState("Semt", e.name);
+              }}
+            />
+          </div>
+
+          <div className="text-center">
+            <Button
+              text="Filtrele"
+              icon={<i className="fas fa-filter" />}
+              onClick={() => customerFilterTable()}
+            />
+          </div>
         </Modal.Body>
       </Modal>
     </Layout>
