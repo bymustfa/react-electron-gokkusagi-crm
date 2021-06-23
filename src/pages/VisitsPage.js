@@ -34,9 +34,8 @@ export default function VisitsPage() {
         ]}
       />
 
-      <div className="border rounded p-4">
-        <LiteTable />
-      </div>
+      <div className="border rounded p-4">{/*<LiteTable />*/}</div>
+
       {/*TODO: burası yarım kaldı*/}
       <Modal size="lg" show={visitAddModalShow} centered>
         <Modal.Header>

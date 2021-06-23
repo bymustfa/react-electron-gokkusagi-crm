@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import cn from "classnames";
 
 export default function FileUploader({ onChange, accept = "*" }) {
   const onDrop = useCallback((acceptedFiles) => {
@@ -11,7 +12,10 @@ export default function FileUploader({ onChange, accept = "*" }) {
   return (
     <>
       <div
-        className="file-uploader bg-light rounded p-2 text-center d-flex align-items-center justify-content-center"
+        className={cn([
+          "file-uploader  rounded p-2 text-center d-flex align-items-center justify-content-center",
+          isDragActive ? "bg-info text-white border-white" : "bg-light",
+        ])}
         {...getRootProps()}
       >
         <input {...getInputProps()} accept={accept} />
@@ -19,7 +23,7 @@ export default function FileUploader({ onChange, accept = "*" }) {
           <h4>Dosyaları buraya bırakın...</h4>
         ) : (
           <h4>
-            Bazı dosyaları buraya sürükleyip bırakın veya dosyaları seçmek için
+            Dosyaları buraya sürükleyip bırakın veya dosyaları seçmek için
             tıklayın
           </h4>
         )}

@@ -1,5 +1,18 @@
 import axios from "axios";
 
+export const getUsers = async (type = null) => {
+  const url = type
+    ? process.env.REACT_APP_API_URL +
+      "Kullanici/GetKullaniciTipIdByList?tipId=" +
+      type
+    : process.env.REACT_APP_API_URL + "Kullanici/GetList";
+
+  const users = await axios.get(url);
+  return users.status === 200 && users.data.SonucTipi === 1
+    ? users.data.Veri
+    : [];
+};
+
 export const getCountries = async () => {
   const countries = await axios.get(
     process.env.REACT_APP_API_URL + "Parametre/UlkeList"
@@ -31,5 +44,14 @@ export const getNeighborhoods = async (districtId) => {
   );
   return neighborhood.status === 200 && neighborhood.data.SonucTipi === 1
     ? neighborhood.data.Veri
+    : [];
+};
+
+export const getCustomers = async () => {
+  const customers = await axios.get(
+    process.env.REACT_APP_API_URL + "Musteri/MusterilerFilter"
+  );
+  return customers.status === 200 && customers.data.SonucTipi === 1
+    ? customers.data.Veri
     : [];
 };

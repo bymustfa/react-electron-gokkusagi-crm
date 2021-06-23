@@ -32,9 +32,7 @@ export default function BulutfonPage() {
         ]}
       />
 
-      <div className="border rounded p-4">
-        <LiteTable />
-      </div>
+      <div className="border rounded p-4">{/*<LiteTable />*/}</div>
     </Layout>
   );
 }

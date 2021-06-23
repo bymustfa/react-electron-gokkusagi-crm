@@ -1,8 +1,20 @@
-import React from "react";
-import { Layout, CardHeader } from "../components/partials";
+import React, { useState } from "react";
+import {
+  Layout,
+  CardHeader,
+  TaskNormalForm,
+  ActiviteNormalForm,
+} from "../components/partials";
 import { Button, LiteTable } from "../components/base";
+import Modal from "react-bootstrap/Modal";
 
 export default function TasksPage() {
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
+
+  const handleTaskSave = (saveDatas) => {
+    console.log(saveDatas);
+  };
+
   return (
     <Layout>
       <CardHeader
@@ -27,11 +39,28 @@ export default function TasksPage() {
             key={3}
             text="Yeni Ekle"
             icon={<i className="fas fa-plus" />}
+            onClick={() => setTaskModalOpen(true)}
           />,
         ]}
       />
 
       <div className="border rounded p-4">{/*<LiteTable />*/}</div>
+
+      <Modal size="lg" show={taskModalOpen} centered>
+        <Modal.Header>
+          <Modal.Title>Görev</Modal.Title>
+          <button
+            type="button"
+            className="close ml-4"
+            onClick={() => setTaskModalOpen(false)}
+          >
+            <i aria-hidden="true" className="ki ki-close" />
+          </button>
+        </Modal.Header>
+        <Modal.Body>
+          <TaskNormalForm handleTaskSave={handleTaskSave} />
+        </Modal.Body>
+      </Modal>
     </Layout>
   );
 }

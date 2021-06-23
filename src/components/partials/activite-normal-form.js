@@ -3,6 +3,8 @@ import { Button, FileUploader, Input, SelectBox } from "../base";
 import moment from "moment";
 import axios from "axios";
 
+import { getCustomers } from "../../utils/parameters";
+
 export default function ActiviteNormalForm({
   handleActiviteSave,
   selectedCustomerId = null,
@@ -34,14 +36,9 @@ export default function ActiviteNormalForm({
   };
 
   useEffect(() => {
-    const url = process.env.REACT_APP_API_URL + "Musteri/MusterilerFilter";
-    axios.get(url).then((response) => {
-      const { data } = response;
-      console.log(data);
-      if (data.SonucTipi === 1) {
-        const datas = [{ value: "", name: "Seçiniz" }, ...data.Veri];
-        setCustomersDatas(datas);
-      }
+    getCustomers().then((data) => {
+      const datas = [{ value: "", name: "Seçiniz" }, ...data];
+      setCustomersDatas(datas);
     });
   }, []);
 

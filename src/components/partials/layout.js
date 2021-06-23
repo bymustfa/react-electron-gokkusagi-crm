@@ -1,9 +1,9 @@
 import React from "react";
-import { Header } from "./index";
+import { Header, StickyToolbar } from "./index";
 
 export default function Layout({ children }) {
   return (
-    <div>
+    <>
       <Header />
       <div className="content d-flex flex-column flex-column-fluid">
         <div className="d-flex flex-column-fluid">
@@ -24,6 +24,7 @@ export default function Layout({ children }) {
           </div>
         </div>
       </div>
-    </div>
+      <StickyToolbar />
+    </>
   );
 }
