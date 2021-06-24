@@ -1,7 +1,8 @@
 import React from "react";
 import cn from "classnames";
+import auth from "../../app/auth";
 import { Button } from "../base";
-
+import { Route, Redirect } from "react-router-dom";
 export default function SideUserPanel({ panelToggle, setPanelToggle }) {
   return (
     <>
@@ -52,7 +53,12 @@ export default function SideUserPanel({ panelToggle, setPanelToggle }) {
                 <Button
                   text="Çıkış Yap"
                   className=" btn-sm btn-light-primary font-weight-bolder py-2 px-5"
-                  onClick={() => console.log("Çıkış Yap")}
+                  onClick={() => {
+                    auth.logout(() => {
+                      sessionStorage.removeItem("auth");
+                      window.location.reload();
+                    });
+                  }}
                 />
               </div>
             </div>

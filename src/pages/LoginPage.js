@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-
+import auth from "../app/auth";
 import { Button } from "../components/base";
 
-export default function LoginPage() {
+export default function LoginPage(props) {
   const {
     register,
     handleSubmit,
@@ -14,6 +14,13 @@ export default function LoginPage() {
 
   const onSubmit = (data) => {
     console.log(data);
+    auth.login(() => {
+      sessionStorage.setItem(
+        "auth",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjEyMzQ1Njc4OTAiLCJBZCI6Ik11c3RhZmEiLCJTb3lhZCI6IsOWenTDvHJrIiwiaWF0IjoxNTE2MjM5MDIyfQ.K7WhFDXGB0VGKCYbqnHC599wtQ5DvzLSKj5xQl1elZU"
+      );
+      props.history.push("/");
+    });
   };
 
   return (
@@ -56,7 +63,7 @@ export default function LoginPage() {
           <div className="d-flex flex-column-fluid flex-center">
             <div className="login-form login-signin">
               <form
-                novalidate
+                noValidate
                 className="form"
                 style={{ minWidth: "350px" }}
                 onSubmit={handleSubmit(onSubmit)}
