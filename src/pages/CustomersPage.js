@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
 
 import {
@@ -95,29 +95,29 @@ export default function CustomersPage() {
     );
   }, []);
 
-  useEffect(() => {
-    if (String(filterProvince).trim().length > 0) {
+  useCallback(() => {
+    if (filterProvince && filterProvince !== undefined) {
       getDistricts(filterProvince).then((datas) =>
         setDistrict([{ value: "", name: "Seçiniz" }, ...datas])
       );
     }
   }, [filterProvince]);
 
-  useEffect(() => {
-    if (String(filterDistrict).trim().length > 0) {
+  useCallback(() => {
+    if (filterDistrict && filterDistrict !== undefined) {
       getNeighborhoods(filterDistrict).then((datas) =>
         setNeighborhood([{ value: "", name: "Seçiniz" }, ...datas])
       );
     }
   }, [filterDistrict]);
 
-  useEffect(() => {
+  useCallback(() => {
     if (!customerModalShow) {
       tableDataCall();
     }
   }, [customerModalShow]);
 
-  useEffect(() => {
+  useCallback(() => {
     tableDataCall();
   }, [tablePageLen, tablePage]);
 

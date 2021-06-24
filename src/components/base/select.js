@@ -15,21 +15,37 @@ export default function SelectBox({
   const [focus, setFocus] = useState(false);
   const [searchText, setSearchText] = useState("");
 
-  useEffect(() => {
-    if (selected && options) {
-      const tm = options.find((x) => x.value === selected);
-      setSearchText(tm?.name || "");
-      onChange(tm?.value || "");
-    }
-  }, [selected, options]);
+  // useEffect(() => {
+  //   if (selected && options) {
+  //     const tm = options.find((x) => x.value === selected);
+  //     setSearchText(tm?.name || "");
+  //     onChange(tm?.value || "");
+  //   }
+  // }, [selected, options]);
+  //
+  // useEffect(() => {
+  //   if (!selected) {
+  //     setOptionDatas(options);
+  //     setSearchText(options[0]?.name || "");
+  //     onChange(options[0]);
+  //   }
+  // }, [options]);
 
   useEffect(() => {
+    setOptionDatas(options);
     if (!selected) {
-      setOptionDatas(options);
-      setSearchText(options[0]?.name || "");
       onChange(options[0]);
     }
-  }, [options]);
+    if (selected && options) {
+      const tm = options.find((x) => {
+        if (x.value === selected) {
+          return x;
+        }
+      });
+      onChange(tm);
+      setSearchText(tm?.name || "");
+    }
+  }, [selected, options]);
 
   const fuzzySearch = (val) => {
     val = val.toLocaleLowerCase();

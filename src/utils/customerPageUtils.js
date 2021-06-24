@@ -86,14 +86,18 @@ export const CustomersContents = () => {
   }, []);
 
   const handleDistricChange = (id) => {
-    getNeighborhoods(id).then((x) => dispatch(setNeighborhoods(x)));
+    if (id && id !== undefined)
+      getNeighborhoods(id).then((x) => dispatch(setNeighborhoods(x)));
   };
 
   const handleProvinceChange = (id) => {
-    dispatch(setProvinceId(id));
-    getDistricts(id).then((x) => {
-      dispatch(setDistricts(x));
-    });
+    if (id && id != undefined) {
+      dispatch(setProvinceId(id));
+      getDistricts(id).then((x) => {
+        dispatch(setDistricts(x));
+        dispatch(setDistrictId(x[0]?.value));
+      });
+    }
   };
 
   const addToAddres = () => {
@@ -122,6 +126,10 @@ export const CustomersContents = () => {
   };
 
   const addToUsers = () => {
+    let sira = 1;
+    if (tmpUsers && tmpUsers.length > 0) {
+      sira = (tmpUsers[tmpUsers.length - 1].Sira || 0) + 1;
+    }
     dispatch(
       setUsersAdd({
         Ad: userDatas.Ad,
@@ -129,11 +137,11 @@ export const CustomersContents = () => {
         Mail: userDatas.Mail,
         Telefon: userDatas.Telefon,
         Durum: true,
+        Sira: sira,
       })
     );
     setTmpUsers(customerDatas.Kisiler);
   };
-
   return [
     {
       id: 1,
@@ -197,6 +205,7 @@ export const CustomersContents = () => {
               label="Müşteri Grubu"
               selected={customerDatas.MusteriGrubu}
               options={[
+                { value: "", name: "Şeçiniz" },
                 { value: 1, name: "daneme" },
                 { value: 2, name: "daneme2" },
               ]}
@@ -216,6 +225,7 @@ export const CustomersContents = () => {
               label="Müşteri Tipi"
               selected={customerDatas.MusteriTipi}
               options={[
+                { value: "", name: "Şeçiniz" },
                 { value: 1, name: "daneme" },
                 { value: 2, name: "daneme2" },
               ]}
@@ -249,6 +259,7 @@ export const CustomersContents = () => {
               label="Ziyaret Sıklığı"
               selected={customerDatas.ZiyaretSikligi}
               options={[
+                { value: "", name: "Şeçiniz" },
                 { value: 1, name: "daneme" },
                 { value: 2, name: "daneme2" },
               ]}
@@ -267,6 +278,7 @@ export const CustomersContents = () => {
               label="Vergi Dairesi"
               selected={customerDatas.VergiDaire}
               options={[
+                { value: "", name: "Şeçiniz" },
                 { value: 1, name: "daneme" },
                 { value: 2, name: "daneme2" },
               ]}
@@ -423,9 +435,12 @@ export const CustomersContents = () => {
                 label="İl"
                 options={addresDatas.provinces}
                 onChange={(e) => {
-                  handleProvinceChange(e.value);
+                  handleProvinceChange(e?.value || null);
                   dispatch(
-                    setAddressState({ key: "tmpprovinceText", value: e.name })
+                    setAddressState({
+                      key: "tmpprovinceText",
+                      value: e?.name || "",
+                    })
                   );
                 }}
                 selected={addresDatas.provinceId}
@@ -435,29 +450,32 @@ export const CustomersContents = () => {
                 parentClass="col-md-3"
                 label="İlçe"
                 options={addresDatas.districts}
+                selected={addresDatas.districtId}
                 onChange={(e) => {
-                  handleDistricChange(e.value);
+                  handleDistricChange(e?.value || null);
                   dispatch(
-                    setAddressState({ key: "tmpdistrictText", value: e.name })
+                    setAddressState({
+                      key: "tmpdistrictText",
+                      value: e?.name || "",
+                    })
                   );
                 }}
-                selected={addresDatas.districtId}
               />
 
               <SelectBox
                 parentClass="col-md-3"
                 label="Semt"
                 options={addresDatas.neighborhoods}
+                selected={addresDatas.neighborhoodId}
                 onChange={(e) => {
-                  setNeighborhoodId(e.value);
+                  dispatch(setNeighborhoodId(e?.value || null));
                   dispatch(
                     setAddressState({
                       key: "tmpneighborhoodText",
-                      value: e.name,
+                      value: e?.name || "",
                     })
                   );
                 }}
-                selected={addresDatas.neighborhoodId}
               />
             </div>
             <div className="row">
@@ -688,13 +706,17 @@ export const CustomersContents = () => {
 
           <ul className="users-list">
             {tmpUsers.length > 0 ? (
-              tmpUsers.map((item) => (
-                <li key={Math.floor(Math.random() * 9999)}>
-                  {item.Ad} {item.Soyad} |{item.Telefon} - {item.Mail}
-                </li>
-              ))
+              tmpUsers.map((item) => {
+                return (
+                  <li key={item.Sira}>
+                    {item.Ad} {item.Soyad} |{item.Telefon} - {item.Mail}
+                  </li>
+                );
+              })
             ) : (
-              <>Kişi Yok</>
+              <div className="border rounded p-4 text-center bg-light">
+                <h3>Kişi Yok</h3>
+              </div>
             )}
           </ul>
         </>
