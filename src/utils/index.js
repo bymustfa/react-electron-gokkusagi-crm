@@ -49,6 +49,11 @@ export const menus = [
     child: [
       {
         id: Math.floor(Math.random() * 9999),
+        href: "/offers",
+        title: "Teklif Listesi",
+      },
+      {
+        id: Math.floor(Math.random() * 9999),
         href: "/orders",
         title: "Sipariş Listesi",
       },

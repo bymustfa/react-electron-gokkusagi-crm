@@ -24,6 +24,7 @@ export default function ActiviteNormalForm({
     Aciklama: "",
   });
 
+  //TODO: dosya üstünw dosya eklenmiyor
   const addFiles = (files) => {
     const tmp = [...fileState, ...files];
     setFileState(tmp);
@@ -50,7 +51,7 @@ export default function ActiviteNormalForm({
           label="Müşteri"
           selected={selectedCustomerId ? selectedCustomerId : ""}
           options={customersDatas}
-          onChange={(e) => stateChange("MusteriId", e.value ? e.value : "")}
+          onChange={(e) => stateChange("MusteriId", e?.value || "")}
         />
       </div>
 
@@ -85,7 +86,7 @@ export default function ActiviteNormalForm({
             { value: 2, name: "Tip 2" },
             { value: 3, name: "Tip 3" },
           ]}
-          onChange={(e) => stateChange("FaliyetTipiId", e.value)}
+          onChange={(e) => stateChange("FaliyetTipiId", e?.value || "")}
         />
 
         <SelectBox
@@ -98,7 +99,7 @@ export default function ActiviteNormalForm({
             { value: 2, name: "Tür 2" },
             { value: 3, name: "Tür 3" },
           ]}
-          onChange={(e) => stateChange("FaliyetTuruId", e.value)}
+          onChange={(e) => stateChange("FaliyetTuruId", e?.value || "")}
         />
       </div>
 

@@ -4,6 +4,7 @@ const BrowserWindow = electron.BrowserWindow;
 const { ipcMain } = require("electron");
 
 const path = require("path");
+
 const url = require("url");
 const isDev = require("electron-is-dev");
 
@@ -14,6 +15,7 @@ function createWindow() {
     titleBarStyle: "hidden-inset",
     width: 900,
     height: 680,
+    icon: path.join(__dirname, "./favicon.ico"),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

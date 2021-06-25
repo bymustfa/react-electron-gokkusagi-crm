@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { OverlayTrigger, Tooltip, Modal } from "react-bootstrap";
+import { SpeedCustomerForm } from "./index";
 
 export default function StickyToolbar() {
+  const [customerSpeedModalOpen, setSustomerSpeedModalOpen] = useState(false);
   return (
     <>
       <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-3 mt-4">
-        <li className="nav-item mb-2">
+        <li
+          className="nav-item mb-2"
+          onClick={() => setSustomerSpeedModalOpen(true)}
+        >
           <OverlayTrigger
             placement="left"
             overlay={<Tooltip id={`tooltip-1`}>Hızlı Müşteri Ekle</Tooltip>}
@@ -27,6 +32,22 @@ export default function StickyToolbar() {
           </OverlayTrigger>
         </li>
       </ul>
+
+      <Modal size="lg" show={customerSpeedModalOpen} centered>
+        <Modal.Header>
+          <Modal.Title>Hızlı Müşteri</Modal.Title>
+          <button
+            type="button"
+            className="close ml-4"
+            onClick={() => setSustomerSpeedModalOpen(false)}
+          >
+            <i aria-hidden="true" className="ki ki-close" />
+          </button>
+        </Modal.Header>
+        <Modal.Body>
+          <SpeedCustomerForm />
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

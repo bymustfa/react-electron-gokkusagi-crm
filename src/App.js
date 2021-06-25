@@ -12,10 +12,12 @@ import {
   TasksPage,
   CalendarPage,
   OrdersPage,
+  OffersPage,
   UsersPage,
   ParametersPage,
   BulutfonPage,
   LoginPage,
+  Error404,
 } from "./pages";
 
 function App() {
@@ -30,11 +32,12 @@ function App() {
         <ProtectedRoute path="/activities" component={ActivitiesPage} exact />
         <ProtectedRoute path="/tasks" component={TasksPage} exact />
         <ProtectedRoute path="/calendar" component={CalendarPage} exact />
+        <ProtectedRoute path="/offers" component={OffersPage} exact />
         <ProtectedRoute path="/orders" component={OrdersPage} exact />
         <ProtectedRoute path="/users" component={UsersPage} exact />
         <ProtectedRoute path="/parameters" component={ParametersPage} exact />
         <ProtectedRoute path="/santral" component={BulutfonPage} exact />
-        <ProtectedRoute path="*" component={() => "404 NOT FOUND"} />
+        <ProtectedRoute path="*" component={Error404} />
       </Switch>
     </main>
   );

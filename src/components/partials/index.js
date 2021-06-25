@@ -12,3 +12,4 @@ export { default as SideUserPanel } from "./side-user-panel";
 export { default as TopBar } from "./top-bar";
 export { default as TopBarRight } from "./top-bar-right";
 export { default as TopbarLeft } from "./top-bar-left";
+export { default as SpeedCustomerForm } from "./speed-customer-form";

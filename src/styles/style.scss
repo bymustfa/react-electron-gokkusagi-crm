@@ -7,6 +7,25 @@ $mainColorOpacity: rgba(246, 78, 96, 0.1);
   min-height: 100% !important;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  margin-left: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #616161;
+  border-radius: 15px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #000000;
+}
+
+::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 15px;
+}
 
 #login-img-area {
   background-image: url("/img/login-visual-1.svg");
@@ -50,6 +69,17 @@ $mainColorOpacity: rgba(246, 78, 96, 0.1);
 
 .search-box {
   position: relative;
+
+  .multi-area {
+    position: relative;
+
+
+    i {
+      position: absolute;
+      right: 10px;
+      top: 12px;
+    }
+  }
 
   label {
     width: 100%;
@@ -105,6 +135,8 @@ $mainColorOpacity: rgba(246, 78, 96, 0.1);
       }
     }
   }
+
+
 }
 
 .btn-show-password {
@@ -162,6 +194,7 @@ $mainColorOpacity: rgba(246, 78, 96, 0.1);
 
 .dropdown-checbox {
   opacity: 0;
+
   & + .dropdown-menu {
     transition: all 120ms;
     right: 20px;

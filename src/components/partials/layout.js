@@ -20,7 +20,9 @@ export default function Layout({ children }) {
         <div className="container d-flex flex-column flex-md-row align-items-center justify-content-between">
           <div className="text-dark order-2 order-md-1">
             <span className="text-muted font-weight-bold mr-2">2021 ©</span>
-            <span className="text-dark-75 text-hover-primary">V: 1.0</span>
+            <span className="text-dark-75 text-hover-primary">
+              V: {process.env.REACT_APP_VERSION}
+            </span>
           </div>
         </div>
       </div>

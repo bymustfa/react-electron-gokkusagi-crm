@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Fuse from "fuse.js";
 import cn from "classnames";
+import Tagify from "@yaireo/tagify";
 
 export default function SelectBox({
   label,
@@ -14,6 +15,31 @@ export default function SelectBox({
   const [optionDatas, setOptionDatas] = useState(options);
   const [focus, setFocus] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const randomId = "tagfy_" + Math.floor(Math.random() * 99999);
+  function tagTemplate(tagData) {
+    return ` ${tagData.name} `;
+  }
+  function suggestionItemTemplate(tagData) {
+    return ` ${tagData.avatar ? ` ` : ""}
+            ${tagData.name}
+            ${tagData.email}
+        
+    `;
+  }
+  useEffect(() => {
+    if (multi) {
+      const input = document.querySelector("#" + randomId);
+      const tagify = new Tagify(input, {
+        maxTags: 10,
+        dropdown: { enabled: 0 },
+        whitelist: options,
+        callbacks: {
+          add: console.log, // callback when adding a tag
+          remove: console.log, // callback when removing a tag
+        },
+      });
+    }
+  }, [multi]);
 
   // useEffect(() => {
   //   if (selected && options) {
@@ -71,44 +97,85 @@ export default function SelectBox({
   return (
     <div className={cn(["form-group", parentClass])}>
       <label>{label}</label>
-
-      <div className=" search-box ">
-        <label>
-          <div className="search-input">
-            <input
-              type="text"
-              value={searchText}
-              placeholder={placeholder}
-              className="form-control"
-              onChange={(e) => searchOption(e.target.value)}
-              onFocus={() => {
-                setFocus(true);
-              }}
-              onBlur={() => setTimeout(() => setFocus(false), 100)}
-            />
-            <span>
-              <i className="fas fa-angle-down" />
-            </span>
-          </div>
-        </label>
-        <ul className={cn(["list-area", focus === true ? "show" : "hide"])}>
-          {optionDatas.slice(0, 7).map((x) => (
-            <li
-              onClick={() => {
-                setSearchText(x.name);
-                setFocus(false);
-                onChange(x);
-              }}
-              key={x.value}
-            >
-              {x.name}
-            </li>
-          ))}
-          {optionDatas.length > 7 && (
-            <li className="font-weight-bold">+ {optionDatas.length - 7} öğe</li>
-          )}
-        </ul>
-      </div>
+      {multi ? (
+        <input
+          type="text"
+          className="form-control selectMode tagify"
+          id={randomId}
+          onChange={(e) => console.log(e.target.value)}
+        />
+      ) : (
+        <div className=" search-box ">
+          <label>
+            <div className="search-input">
+              <input
+                type="text"
+                value={searchText}
+                placeholder={placeholder}
+                className="form-control"
+                onChange={(e) => searchOption(e.target.value)}
+                onFocus={() => {
+                  setFocus(true);
+                }}
+                onBlur={() => setTimeout(() => setFocus(false), 100)}
+              />
+              <span>
+                <i className="fas fa-angle-down" />
+              </span>
+            </div>
+            {/*{multi ? (*/}
+            {/*  <div className="multi-area">*/}
+            {/*    <div className="tagify  w-100 border rounded h-100   multi">*/}
+            {/*      <tag*/}
+            {/*        title="html"*/}
+            {/*        contenteditable="false"*/}
+            {/*        spellcheck="false"*/}
+            {/*        tabindex="-1"*/}
+            {/*        className="tagify__tag tagify--noAnim"*/}
+            {/*        role="tag"*/}
+            {/*        __isvalid="true"*/}
+            {/*        value="html"*/}
+            {/*      >*/}
+            {/*        <div>*/}
+            {/*          <span className="tagify__tag-text">html</span>*/}
+            {/*        </div>*/}
+            {/*        <x*/}
+            {/*          title=""*/}
+            {/*          className="tagify__tag__removeBtn"*/}
+            {/*          role="button"*/}
+            {/*          aria-label="remove tag"*/}
+            {/*        />*/}
+            {/*      </tag>*/}
+            {/*    </div>*/}
+            {/*    <span>*/}
+            {/*      <i className="fas fa-angle-down" />*/}
+            {/*    </span>*/}
+            {/*  </div>*/}
+            {/*) : (*/}
+            {/*  */}
+            {/*)}*/}
+          </label>
+          <ul className={cn(["list-area", focus === true ? "show" : "hide"])}>
+            {optionDatas.slice(0, 7).map((x) => (
+              <li
+                onClick={() => {
+                  setSearchText(x.name);
+                  setFocus(false);
+                  onChange(x);
+                }}
+                key={x.value}
+              >
+                {x.name}
+              </li>
+            ))}
+            {optionDatas.length > 7 && (
+              <li className="font-weight-bold">
+                + {optionDatas.length - 7} öğe
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
 
       {/*<SelectSearch*/}
       {/*  options={options}*/}
