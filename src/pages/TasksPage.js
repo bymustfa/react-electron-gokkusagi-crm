@@ -3,7 +3,7 @@ import {
   Layout,
   CardHeader,
   TaskNormalForm,
-  ActiviteNormalForm,
+  ActionNormalForm,
 } from "../components/partials";
 import { Button, LiteTable } from "../components/base";
 import Modal from "react-bootstrap/Modal";
@@ -26,13 +26,13 @@ export default function TasksPage() {
             text="Yenile"
             icon={<i className="fas fa-sync" />}
             type="info"
-            className="mr-3"
+            className="mr-3 btn-sm"
           />,
           <Button
             key={2}
             text="Filtre"
             type="success"
-            className="mr-3"
+            className="mr-3 btn-sm"
             icon={<i className="fas fa-filter" />}
           />,
           <Button
@@ -40,6 +40,7 @@ export default function TasksPage() {
             text="Yeni Ekle"
             icon={<i className="fas fa-plus" />}
             onClick={() => setTaskModalOpen(true)}
+            className="btn-sm"
           />,
         ]}
       />

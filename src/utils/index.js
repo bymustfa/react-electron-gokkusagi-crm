@@ -19,18 +19,13 @@ export const menus = [
 
       {
         id: Math.floor(Math.random() * 9999),
-        href: "/visits",
-        title: "Ziyaret Listesi",
-      },
-      {
-        id: Math.floor(Math.random() * 9999),
         href: "/activities",
-        title: "Faaliyet Listesi",
+        title: "Aktivite Listesi",
       },
       {
         id: Math.floor(Math.random() * 9999),
-        href: "/tasks",
-        title: "Görev Listesi",
+        href: "/actions",
+        title: "Faaliyet Listesi",
       },
 
       {

@@ -55,3 +55,23 @@ export const getCustomers = async () => {
     ? customers.data.Veri
     : [];
 };
+export const getCustomerAddress = async (customerId) => {
+  const address = await axios.get(
+    process.env.REACT_APP_API_URL +
+      "Musteri/GetMusteriAdresler?Id=" +
+      customerId
+  );
+  return address.status === 200 && address.data.SonucTipi === 1
+    ? address.data.Veri
+    : [];
+};
+
+export const getStocksFilter = async (word) => {
+  const stocks = await axios.get(
+    process.env.REACT_APP_API_URL + "Stok/StokAra?kelime=" + word
+  );
+
+  return stocks.status === 200 && stocks.data.SonucTipi === 1
+    ? stocks.data.Veri
+    : [];
+};

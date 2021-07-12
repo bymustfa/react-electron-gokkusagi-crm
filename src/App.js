@@ -7,8 +7,8 @@ import { ProtectedRoute } from "./app/protected.route";
 import {
   HomePage,
   CustomersPage,
-  VisitsPage,
   ActivitiesPage,
+  ActionsPage,
   TasksPage,
   CalendarPage,
   OrdersPage,
@@ -28,12 +28,12 @@ function App() {
 
         <ProtectedRoute path="/" component={HomePage} exact />
         <ProtectedRoute path="/customers" component={CustomersPage} exact />
-        <ProtectedRoute path="/visits" component={VisitsPage} exact />
         <ProtectedRoute path="/activities" component={ActivitiesPage} exact />
+        <ProtectedRoute path="/actions" component={ActionsPage} exact />
         <ProtectedRoute path="/tasks" component={TasksPage} exact />
         <ProtectedRoute path="/calendar" component={CalendarPage} exact />
         <ProtectedRoute path="/offers" component={OffersPage} exact />
-        <ProtectedRoute path="/orders" component={OrdersPage} exact />
+
         <ProtectedRoute path="/users" component={UsersPage} exact />
         <ProtectedRoute path="/parameters" component={ParametersPage} exact />
         <ProtectedRoute path="/santral" component={BulutfonPage} exact />

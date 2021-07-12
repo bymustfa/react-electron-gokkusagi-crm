@@ -14,18 +14,19 @@ export default function CalendarPage() {
             text="Yenile"
             icon={<i className="fas fa-sync" />}
             type="info"
-            className="mr-3"
+            className="mr-3 btn-sm"
           />,
           <Button
             key={2}
             text="Filtre"
             type="success"
-            className="mr-3"
+            className="mr-3 btn-sm"
             icon={<i className="fas fa-filter" />}
           />,
           <Button
             key={3}
             text="Yeni Ekle"
+            className="btn-sm"
             icon={<i className="fas fa-plus" />}
           />,
         ]}

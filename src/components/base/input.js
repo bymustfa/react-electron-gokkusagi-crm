@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import cn from "classnames";
 
 export default function Input({
@@ -11,21 +11,34 @@ export default function Input({
   required = false,
   disabled = false,
   value = "",
+  rows = 4,
+  min = 0,
+  max = null,
+  step = null,
 }) {
-  return (
-    <div className={cn(["form-group", parentClass])}>
-      <label>{label}</label>
-      {type === "textarea" ? (
+  const [inputValue, setInputValue] = useState(value);
+
+  useEffect(() => setInputValue(value), [value]);
+
+  if (type === "textarea") {
+    return (
+      <div className={cn(["form-group", parentClass])}>
+        <label>{label}</label>
         <textarea
           placeholder={placeholder}
           required={required}
           onChange={onChange}
           disabled={disabled}
           className={cn(["form-control", childClass])}
-          rows={4}
-          defaultValue={value}
+          rows={rows}
+          value={inputValue}
         />
-      ) : (
+      </div>
+    );
+  } else if (type === "text") {
+    return (
+      <div className={cn(["form-group", parentClass])}>
+        <label>{label}</label>
         <input
           type={type}
           className={cn(["form-control", childClass])}
@@ -33,9 +46,42 @@ export default function Input({
           required={required}
           onChange={onChange}
           disabled={disabled}
-          defaultValue={value}
+          value={inputValue}
         />
-      )}
-    </div>
-  );
+      </div>
+    );
+  } else if (type === "number") {
+    return (
+      <div className={cn(["form-group", parentClass])}>
+        <label>{label}</label>
+        <input
+          type={type}
+          className={cn(["form-control", childClass])}
+          placeholder={placeholder}
+          required={required}
+          onChange={onChange}
+          disabled={disabled}
+          value={inputValue}
+          min={min}
+          max={max}
+          step={step}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div className={cn(["form-group", parentClass])}>
+        <label>{label}</label>
+        <input
+          type={type}
+          className={cn(["form-control", childClass])}
+          placeholder={placeholder}
+          required={required}
+          onChange={onChange}
+          disabled={disabled}
+          value={inputValue}
+        />
+      </div>
+    );
+  }
 }

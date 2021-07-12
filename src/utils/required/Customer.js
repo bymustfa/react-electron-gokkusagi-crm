@@ -1,9 +1,8 @@
-export const customerRquiredSet = [
+const customerRequiredSet = [
   { key: "Unvan", empty: "Lütfen Ünvan Giriniz" },
   { key: "Vkn", empty: "Lütfen Vkn Giriniz" },
-  { key: "Unvan", empty: "Lütfen Ünvan Giriniz" },
+  { key: "MusteriTipi", empty: "Lütfen Müşeri Tipi Seçiniz" },
+  { key: "MusteriKod", empty: "Lütfen Müşteri Kodu Giriniz" },
+  { key: "Telefon", empty: "Lütfen Telefon Giriniz" },
 ];
-
-export const activitesRquiredSet = [
-  { key: "MusteriId", empty: "Lütfen Müşteri Seçiniz" },
-];
+export default customerRequiredSet;

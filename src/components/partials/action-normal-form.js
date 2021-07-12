@@ -5,7 +5,7 @@ import axios from "axios";
 
 import { getCustomers } from "../../utils/parameters";
 
-export default function ActiviteNormalForm({
+export default function ActionNormalForm({
   handleActiviteSave,
   selectedCustomerId = null,
 }) {

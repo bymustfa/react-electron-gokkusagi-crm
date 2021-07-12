@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import cn from "classnames";
-import swal from "sweetalert";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default function Tabs({
   tabs,
@@ -42,12 +42,21 @@ export default function Tabs({
                 className="close ml-4"
                 onClick={() => {
                   if (modalClose.question) {
-                    swal({
-                      title: "Pencereyi Kapatmak Üzeresiniz",
+                    Swal.fire({
+                      // icon: "success",
+                      title: "Pencereyi Kapatmak Üzeresiniz!",
                       text: "Kapatmak İstediğinize Emin misiniz?",
-                      buttons: ["İptal", "Evet, Kapat"],
+                      buttonsStyling: false,
+                      reverseButtons: true,
+                      confirmButtonText: " Evet, Kapat!",
+                      showCancelButton: true,
+                      cancelButtonText: " Hayır, İptal",
+                      customClass: {
+                        confirmButton: "btn btn-danger",
+                        cancelButton: "btn btn-default",
+                      },
                     }).then(function (result) {
-                      if (result) {
+                      if (result.isConfirmed) {
                         modalClose.set(false);
                       }
                     });

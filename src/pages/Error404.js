@@ -11,6 +11,7 @@ export default function Error404(props) {
       <h1>404 | Sayfa Bulunamadı</h1>
       <Button
         text="Geri Git"
+        className="btn-lg"
         icon={<i className="fas fa-arrow-left" />}
         onClick={() => props.history.push("/")}
       />

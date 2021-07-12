@@ -8,25 +8,25 @@ export const slice = createSlice({
     SatisTemsilcisiId: "",
     MusteriGrubu: "",
     MusteriTipi: "",
-    MusteriNo: "",
+    MusteriKod: "",
     ZiyaretSikligi: "",
     VergiDaire: "",
     Mail: "",
     Telefon: "",
     Faks: "",
-    Adres: "",
+
     Aciklama: "",
     Adresler: [],
     Kisiler: [],
 
-    AnlasmaAdi: "",
-    AnlasmaBitis: "",
     SrvSifre: "",
     EMikroKullanici: "",
     EMikroSifre: "",
     AkisPin: "",
     SunucuGiris: "",
     SunucuSifre: "",
+
+    BakimAnlasmalari: [],
   },
   reducers: {
     setState: (state, action) => {
@@ -34,22 +34,25 @@ export const slice = createSlice({
     },
 
     setAddressAdd: (state, action) => {
-      return {
-        ...state,
-        Adresler: [action.payload, ...state.Adresler],
-      };
+      state.Adresler.push(action.payload);
     },
 
     setUsersAdd: (state, action) => {
-      return {
-        ...state,
-        Kisiler: [action.payload, ...state.Kisiler],
-      };
+      state.Kisiler.push(action.payload);
+    },
+
+    setContractAdd: (state, action) => {
+      state.BakimAnlasmalari = [action.payload, ...state.BakimAnlasmalari];
     },
   },
 });
 
-export const { setState, setAddressAdd, setUsersAdd } = slice.actions;
+export const {
+  setState,
+  setAddressAdd,
+  setUsersAdd,
+  setContractAdd,
+} = slice.actions;
 
 export const SelectCustomers = (state) => state.customers;
 

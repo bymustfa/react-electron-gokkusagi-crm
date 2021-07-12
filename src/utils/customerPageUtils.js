@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import moment from "moment";
+import "moment/locale/tr";
 import { useSelector, useDispatch } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { Button, Input, SelectBox, Switch } from "../components/base";
+import { useToasts } from "react-toast-notifications";
 
 import {
   setState,
   setAddressAdd,
   setUsersAdd,
+  setContractAdd,
   SelectCustomers,
 } from "../features/customers/customerSlice";
 
@@ -63,6 +66,8 @@ export const CustomersTabs = [
 ];
 
 export const CustomersContents = () => {
+  const { addToast } = useToasts();
+  moment.locale("tr");
   const customerDatas = useSelector(SelectCustomers);
   const addresDatas = useSelector(SelectAddres);
   const userDatas = useSelector(SelectUser);
@@ -72,6 +77,10 @@ export const CustomersContents = () => {
   const [addresAreaToogle, setAdresAreaToggle] = useState(false);
   const [tmpAdresler, setTmpAdresler] = useState([]);
   const [tmpUsers, setTmpUsers] = useState([]);
+  const [tmpContrats, setTmpContrat] = useState([]);
+
+  const [contratName, setContratName] = useState("");
+  const [contratDate, setContratDate] = useState("");
 
   const passwordToggle = (key) => {
     const status = !passwordDatas[key];
@@ -123,7 +132,12 @@ export const CustomersContents = () => {
       })
     );
     setTmpAdresler(customerDatas.Adresler);
+    setAdresAreaToggle(false);
   };
+
+  useEffect(() => {
+    setTmpAdresler([...customerDatas.Adresler]);
+  }, [customerDatas.Adresler]);
 
   const addToUsers = () => {
     let sira = 1;
@@ -140,8 +154,36 @@ export const CustomersContents = () => {
         Sira: sira,
       })
     );
-    setTmpUsers(customerDatas.Kisiler);
   };
+
+  useEffect(() => {
+    setTmpUsers([...customerDatas.Kisiler]);
+  }, [customerDatas.Kisiler]);
+
+  const addToContracts = () => {
+    let sira = 1;
+    if (tmpContrats && tmpContrats.length > 0) {
+      sira = (tmpContrats[tmpContrats.length - 1].Sira || 0) + 1;
+    }
+
+    dispatch(
+      setContractAdd({
+        AnlasmaAdi: contratName,
+        BitisTarihi: contratDate,
+        Sira: sira,
+      })
+    );
+
+    setContratName("");
+    setContratDate("");
+  };
+
+  useEffect(() => {
+    setTmpContrat([...customerDatas.BakimAnlasmalari]);
+  }, [customerDatas.BakimAnlasmalari]);
+
+  console.log(tmpContrats);
+
   return [
     {
       id: 1,
@@ -242,12 +284,12 @@ export const CustomersContents = () => {
             <Input
               parentClass="col-md-3"
               type="text"
-              placeholder="Müşteri No"
-              label="Müşteri No"
+              placeholder="Müşteri Kod"
+              label="Müşteri Kod"
               onChange={(e) => {
                 dispatch(
                   setState({
-                    key: "MusteriNo",
+                    key: "MusteriKod",
                     value: e.value,
                   })
                 );
@@ -338,23 +380,10 @@ export const CustomersContents = () => {
           </div>
           <div className="row">
             <Input
-              parentClass="col-md-6"
-              type="textarea"
-              placeholder="Adres"
-              label="Adres"
-              onChange={(e) => {
-                dispatch(
-                  setState({
-                    key: "Adres",
-                    value: e.value,
-                  })
-                );
-              }}
-            />
-            <Input
-              parentClass="col-md-6"
+              parentClass="col-md-12"
               type="textarea"
               placeholder="Açıklama"
+              rows={2}
               label="Açıklama"
               onChange={(e) => {
                 dispatch(
@@ -393,14 +422,16 @@ export const CustomersContents = () => {
                 )}{" "}
               </ul>
 
-              <div className="text-center">
-                <Button
-                  type="secondary"
-                  text="Yeni Adres Ekle"
-                  icon={<i className="fas fa-plus" />}
-                  onClick={() => setAdresAreaToggle(true)}
-                />
-              </div>
+              {!addresAreaToogle && (
+                <div className="text-center">
+                  <Button
+                    type="secondary"
+                    text="Yeni Adres Ekle"
+                    icon={<i className="fas fa-plus" />}
+                    onClick={() => setAdresAreaToggle(true)}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -728,36 +759,6 @@ export const CustomersContents = () => {
         <>
           <div className="row">
             <Input
-              label="Bakım Anlaşması:"
-              placeholder="Bakım Anlaşması :"
-              parentClass="col-md-3"
-              value={customerDatas.AnlasmaAdi}
-              onChange={(e) =>
-                dispatch(
-                  setState({
-                    key: "AnlasmaAdi",
-                    value: e.target.value,
-                  })
-                )
-              }
-            />
-
-            <Input
-              label="Bakım Anlaşması Bitiş Tarihi:"
-              placeholder="Bakım Anlaşması Bitiş Tarihi:"
-              type="date"
-              parentClass="col-md-3"
-              value={customerDatas.AnlasmaBitis}
-              onChange={(e) =>
-                dispatch(
-                  setState({
-                    key: "AnlasmaBitis",
-                    value: e.target.value,
-                  })
-                )
-              }
-            />
-            <Input
               label="E-Mikro Mail"
               placeholder="E-Mikro Mail"
               parentClass="col-md-3"
@@ -771,7 +772,6 @@ export const CustomersContents = () => {
                 )
               }
             />
-
             <div className=" col-md-3  " style={{ position: "relative" }}>
               <Input
                 label="E-Mikro Şifre"
@@ -800,10 +800,7 @@ export const CustomersContents = () => {
                   )
                 }
               />
-            </div>
-          </div>
-
-          <div className="row">
+            </div>{" "}
             <div className=" col-md-3  " style={{ position: "relative" }}>
               <Input
                 label="Srv Şifre"
@@ -833,7 +830,6 @@ export const CustomersContents = () => {
                 }
               />
             </div>
-
             <Input
               label="Akis PIN"
               placeholder="Akis PIN"
@@ -890,6 +886,86 @@ export const CustomersContents = () => {
                   )
                 }
               />
+            </div>
+          </div>
+
+          <hr />
+
+          <div className="row">
+            <Input
+              parentClass="col-md-5"
+              label="Bakım Anlaşması:"
+              placeholder="Bakım Anlaşması"
+              value={contratName}
+              onChange={(e) => setContratName(e.target.value)}
+            />
+
+            <Input
+              parentClass="col-md-5"
+              label="Bakım Anlaşması Bitiş Tarihi:"
+              placeholder="Bakım Anlaşması Bitiş Tarihi:"
+              type="date"
+              value={contratDate}
+              onChange={(e) => setContratDate(e.target.value)}
+            />
+            <div className=" col-md-2 pt-8">
+              <Button
+                type="secondary"
+                icon={<i className="fas fa-plus" />}
+                text="Ekle"
+                className="col-12"
+                onClick={() => {
+                  if (contratName.trim().length > 0) {
+                    if (contratDate.trim().length > 0) {
+                      addToContracts();
+                    } else {
+                      addToast("Bitiş Tarihi Giriniz", {
+                        appearance: "warning",
+                        autoDismiss: true,
+                      });
+                    }
+                  } else {
+                    addToast("Anlaşma Adı Giriniz", {
+                      appearance: "warning",
+                      autoDismiss: true,
+                    });
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <hr />
+
+          <div className="row">
+            <div className="col-md-12">
+              <ul className="list-group">
+                {tmpContrats.map((item) => (
+                  <li
+                    className="list-group-item "
+                    key={Math.floor(Math.random() * 9999)}
+                  >
+                    <div className="row ">
+                      <div className="col-md-6  d-flex flex-column flex-grow-1 py-2">
+                        <span className="text-muted small font-weight-bold">
+                          Anlaşma:
+                        </span>
+                        <span className="text-dark-75 font-weight-bold  font-size-lg mb-1">
+                          {item.AnlasmaAdi}
+                        </span>
+                      </div>
+
+                      <div className="col-md-6 d-flex flex-column flex-grow-1 py-2">
+                        <span className="text-muted small font-weight-bold">
+                          Bitiş Tarihi:
+                        </span>
+                        <span className="text-dark-75 font-weight-bold  font-size-lg mb-1">
+                          {moment(item.BitisTarihi).format("DD MMMM  YYYY")}
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </>

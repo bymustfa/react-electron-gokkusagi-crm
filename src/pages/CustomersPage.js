@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
+import { useToasts } from "react-toast-notifications";
 
 import {
   Layout,
   CardHeader,
   Tabs,
-  ActiviteNormalForm,
+  ActionNormalForm,
   TableDropdown,
 } from "../components/partials";
 import { Button, LiteTable, Input, SelectBox } from "../components/base";
@@ -23,7 +24,10 @@ import {
   getNeighborhoods,
 } from "../utils/parameters";
 
+import { customerRequiredSet } from "../utils/required";
+
 export default function CustomersPage() {
+  const { addToast } = useToasts();
   const [customerModalShow, setCustomerModalShow] = useState(false);
   const [activiteModalShow, setActiviteModalShow] = useState(false);
   const [filterModalShow, setFilterModalShow] = useState(false);
@@ -122,7 +126,23 @@ export default function CustomersPage() {
   }, [tablePageLen, tablePage]);
 
   const saveCustomer = () => {
-    console.log(customerDatas);
+    let saveStatus = true;
+    let alertContent = "";
+    customerRequiredSet.map((req) => {
+      if (String(customerDatas[req.key]).trim().length == 0) {
+        alertContent += `<div>${req.empty}</div>`;
+        saveStatus = false;
+      }
+    });
+
+    if (saveStatus) {
+      console.log(customerDatas);
+    } else {
+      addToast(alertContent, {
+        appearance: "warning",
+        autoDismiss: true,
+      });
+    }
   };
 
   const handleActiviteSave = (saveDatas, fileState) => {
@@ -294,7 +314,7 @@ export default function CustomersPage() {
           </button>
         </Modal.Header>
         <Modal.Body>
-          <ActiviteNormalForm
+          <ActionNormalForm
             selectedCustomerId={selectedCustomerId}
             handleActiviteSave={handleActiviteSave}
           />

@@ -13,63 +13,68 @@ export default function SelectBox({
   placeholder = "Seçiniz",
 }) {
   const [optionDatas, setOptionDatas] = useState(options);
+  const [multiValues, setMultiValues] = useState("");
   const [focus, setFocus] = useState(false);
   const [searchText, setSearchText] = useState("");
   const randomId = "tagfy_" + Math.floor(Math.random() * 99999);
-  function tagTemplate(tagData) {
-    return ` ${tagData.name} `;
-  }
-  function suggestionItemTemplate(tagData) {
-    return ` ${tagData.avatar ? ` ` : ""}
-            ${tagData.name}
-            ${tagData.email}
-        
-    `;
-  }
+
   useEffect(() => {
     if (multi) {
       const input = document.querySelector("#" + randomId);
       const tagify = new Tagify(input, {
+        tagTextProp: "name",
+        enforceWhitelist: true,
         maxTags: 10,
-        dropdown: { enabled: 0 },
+        dropdown: { enabled: 0, searchKeys: ["name"] },
         whitelist: options,
-        callbacks: {
-          add: console.log, // callback when adding a tag
-          remove: console.log, // callback when removing a tag
+        templates: {
+          tag: (tagData) => {
+            return `<tag 
+            title='${tagData.name}'
+             contenteditable='false' 
+             spellcheck="false" 
+             class='tagify__tag ${tagData.class ? tagData.class : ""}' >
+                        <x title='remove tag' class='tagify__tag__removeBtn'></x>
+                        <div>  <span class='tagify__tag-text'>
+                            ${tagData.name}
+                         </span> </div>
+                    </tag>`;
+          },
+          dropdownItem: (tagData) => {
+            return `  <div
+                  name="${tagData.name}"
+                  value="${tagData.value}"
+                  class="tagify__dropdown__item"
+                  tabindex="0"
+                  role="option"
+                  tagifysuggestionidx="0"
+                >  ${tagData.name}  </div>`;
+          },
         },
       });
     }
   }, [multi]);
 
-  // useEffect(() => {
-  //   if (selected && options) {
-  //     const tm = options.find((x) => x.value === selected);
-  //     setSearchText(tm?.name || "");
-  //     onChange(tm?.value || "");
-  //   }
-  // }, [selected, options]);
-  //
-  // useEffect(() => {
-  //   if (!selected) {
-  //     setOptionDatas(options);
-  //     setSearchText(options[0]?.name || "");
-  //     onChange(options[0]);
-  //   }
-  // }, [options]);
-
   useEffect(() => {
-    setOptionDatas(options);
-    if (!selected) {
-      onChange(options[0]);
-    }
-    if (selected && options) {
-      const tm = options.find((x) => {
-        if (x.value === selected) {
-          return x;
-        }
-      });
-      onChange(tm);
-      setSearchText(tm?.name || "");
+    if (multi) {
+      console.log(selected);
+
+      setMultiValues(selected);
+      console.log("multiValues: ", multiValues, "selected: ", selected);
+    } else {
+      setOptionDatas(options);
+      if (!selected) {
+        onChange(options[0]);
+      }
+      if (selected && options) {
+        const tm = options.find((x) => {
+          if (x.value === selected) {
+            return x;
+          }
+        });
+        onChange(tm);
+        setSearchText(tm?.name || "");
+      }
     }
   }, [selected, options]);
 
@@ -102,7 +107,9 @@ export default function SelectBox({
           type="text"
           className="form-control selectMode tagify"
           id={randomId}
-          onChange={(e) => console.log(e.target.value)}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          defaultValue={multiValues}
         />
       ) : (
         <div className=" search-box ">

@@ -1,3 +1,1 @@
-export const reqiredControl = (dataSet, requiredSet) => {
-  console.log("Yarım Kaldı");
-};
+export { default as customerRequiredSet } from "./Customer";

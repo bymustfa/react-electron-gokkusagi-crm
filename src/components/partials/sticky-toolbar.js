@@ -24,6 +24,17 @@ export default function StickyToolbar() {
         <li className="nav-item mb-2">
           <OverlayTrigger
             placement="left"
+            overlay={<Tooltip id={`tooltip-2`}>Hızlı Aktivite Girişi</Tooltip>}
+          >
+            <span className="btn btn-sm btn-icon btn-bg-light btn-icon-success btn-hover-success">
+              <i className="flaticon-calendar-with-a-clock-time-tools" />
+            </span>
+          </OverlayTrigger>
+        </li>
+
+        <li className="nav-item mb-2">
+          <OverlayTrigger
+            placement="left"
             overlay={<Tooltip id={`tooltip-2`}>Hızlı Faaliyet Girişi</Tooltip>}
           >
             <span className="btn btn-sm btn-icon btn-bg-light btn-icon-warning btn-hover-warning">
