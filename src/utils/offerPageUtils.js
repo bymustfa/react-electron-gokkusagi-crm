@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Input, SelectBox, Button } from "../components/base";
 import { Layout, StockSearchInput, LineDetails } from "../components/partials";
+import { formatMoney } from "../app/helpers";
 import { useToasts } from "react-toast-notifications";
 import { Modal } from "react-bootstrap";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 import { getCustomers, getCustomerAddress } from "./parameters";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +12,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setOfferState,
   setLinesAdd,
+  setLinesDelete,
   setDescriptionAdd,
+  setDescriptionDelete,
   SelectOffers,
 } from "../features/offers/offerSlice";
 
@@ -59,6 +63,8 @@ export const OfferContents = () => {
   const [customerAddress, setCustomerAddress] = useState([]);
   const [stockSearchText, setStockSearchText] = useState("");
   const [lines, setLines] = useState([]);
+  const [lineDetailModalOpen, setLineDetailModalOpen] = useState(false);
+  const [lineModalDatas, setLineModalDatas] = useState({});
 
   const [descInput, setDescInput] = useState("");
   const [descriptions, setDescriptions] = useState([]);
@@ -70,7 +76,9 @@ export const OfferContents = () => {
   }, []);
 
   const stockCalc = () => {
-    const toplam = stockInfos.Miktar * stockInfos.BirimFiyat;
+    const toplam = parseFloat(
+      (stockInfos.Miktar * stockInfos.BirimFiyat).toFixed(2)
+    );
 
     const tmp = stockInfos;
     tmp.Toplam = toplam;
@@ -113,8 +121,13 @@ export const OfferContents = () => {
         Aciklama: "",
         Iskonto: [],
       });
+
+      setTotal(0);
     }
   };
+
+  const lineDelete = (key) => dispatch(setLinesDelete(key));
+  const descriptionDelete = (key) => dispatch(setDescriptionDelete(key));
 
   useEffect(() => {
     setLines(offerDatas.Satirlar);
@@ -172,7 +185,9 @@ export const OfferContents = () => {
               placeholder="Seçiniz"
               options={[{ value: "", name: "Seçiniz" }]}
               selected={offerDatas.TeslimTipiId}
-              onChange={(e) => offerSetData("TeslimTipiId", e.value)}
+              onChange={(e) =>
+                offerSetData("TeslimTipiId", e?.value ? e.value : "")
+              }
             />
           </div>
 
@@ -184,8 +199,8 @@ export const OfferContents = () => {
               options={customers}
               selected={offerDatas.MusteriId}
               onChange={(e) => {
-                offerSetData("MusteriId", e.value);
-                getAdress(e.value);
+                offerSetData("MusteriId", e?.value ? e.value : "");
+                e?.value && getAdress(e.value);
               }}
             />
 
@@ -196,7 +211,8 @@ export const OfferContents = () => {
               options={customerAddress}
               selected={offerDatas.MusteriAdresId}
               onChange={(e) =>
-                e?.value && offerSetData("MusteriAdresId", e.value)
+                e?.value &&
+                offerSetData("MusteriAdresId", e?.value ? e.value : "")
               }
             />
             <SelectBox
@@ -208,7 +224,9 @@ export const OfferContents = () => {
                 { value: 1, name: "Dur 1" },
               ]}
               selected={offerDatas.SiparisDurumId}
-              onChange={(e) => offerSetData("SiparisDurumId", e.value)}
+              onChange={(e) =>
+                offerSetData("SiparisDurumId", e?.value ? e.value : "")
+              }
             />
           </div>
 
@@ -219,7 +237,9 @@ export const OfferContents = () => {
               placeholder="Seçiniz"
               options={[{ value: "", name: "Seçiniz" }]}
               selected={offerDatas.SorumlulukMerkeziId}
-              onChange={(e) => offerSetData("SorumlulukMerkeziId", e.value)}
+              onChange={(e) =>
+                offerSetData("SorumlulukMerkeziId", e?.value ? e.value : "")
+              }
             />
 
             <SelectBox
@@ -228,7 +248,7 @@ export const OfferContents = () => {
               placeholder="Seçiniz"
               options={[{ value: "", name: "Seçiniz" }]}
               selected={offerDatas.ProjeId}
-              onChange={(e) => offerSetData("ProjeId", e.value)}
+              onChange={(e) => offerSetData("ProjeId", e?.value ? e.value : "")}
             />
 
             <SelectBox
@@ -237,7 +257,7 @@ export const OfferContents = () => {
               placeholder="Seçiniz"
               options={[{ value: "", name: "Seçiniz" }]}
               selected={offerDatas.DepoId}
-              onChange={(e) => offerSetData("DepoId", e.value)}
+              onChange={(e) => offerSetData("DepoId", e?.value ? e.value : "")}
             />
           </div>
 
@@ -248,7 +268,9 @@ export const OfferContents = () => {
               placeholder="Seçiniz"
               options={[{ value: "", name: "Seçiniz" }]}
               selected={offerDatas.ParaBirimiId}
-              onChange={(e) => offerSetData("ParaBirimiId", e.value)}
+              onChange={(e) =>
+                offerSetData("ParaBirimiId", e?.value ? e.value : "")
+              }
             />
 
             <Input
@@ -269,7 +291,9 @@ export const OfferContents = () => {
               placeholder="Seçiniz"
               options={[{ value: "", name: "Seçiniz" }]}
               selected={offerDatas.SaticiId}
-              onChange={(e) => offerSetData("SaticiId", e.value)}
+              onChange={(e) =>
+                offerSetData("SaticiId", e?.value ? e.value : "")
+              }
             />
           </div>
           <div className="row">
@@ -339,6 +363,10 @@ export const OfferContents = () => {
               min={0}
               max={1000}
               step={0.01}
+              onKeyPress={(e) =>
+                e.code === "Enter" ||
+                (e.code === "NumpadEnter" && addToListStock())
+              }
             />
 
             <Input
@@ -351,6 +379,10 @@ export const OfferContents = () => {
               min={0}
               max={1000}
               step={0.01}
+              onKeyPress={(e) =>
+                e.code === "Enter" ||
+                (e.code === "NumpadEnter" && addToListStock())
+              }
             />
 
             <div className=" col-md-2 pt-8">
@@ -379,30 +411,61 @@ export const OfferContents = () => {
               </tr>
             </thead>
             <tbody className="border border-2">
-              {lines.map((item) => (
-                <tr key={item.Sira}>
-                  <td>{item.Sira}</td>
-                  <td>{item.Kod}</td>
-                  <td>{item.Ad}</td>
-                  <td className="text-right">{item.BirimFiyat}</td>
-                  <td className="text-right">{item.Miktar}</td>
-                  <td className="text-right">{item.Toplam}</td>
-                  <td>
-                    <button
-                      className="btn btn-sm btn-text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bold btn-hover-bg-light mr-3"
-                      onClick={() => {
-                        console.log(item.Sira);
-                      }}
-                    >
-                      <i className="flaticon2-edit text-sm"></i> Detay
-                    </button>
+              {lines
+                .slice()
+                .sort((a, b) => {
+                  if (a.Sira > b.Sira) return 1;
+                  if (a.Sira < b.Sira) return -1;
+                  return 0;
+                })
+                .map((item) => (
+                  <tr key={item.Sira}>
+                    <td>{item.Sira}</td>
+                    <td>{item.Kod}</td>
+                    <td>{item.Ad}</td>
+                    <td className="text-right">
+                      {formatMoney(item.BirimFiyat)}
+                    </td>
+                    <td className="text-right">{item.Miktar}</td>
+                    <td className="text-right">{formatMoney(item.Toplam)}</td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bold btn-hover-bg-light mr-3"
+                        onClick={() => {
+                          setLineModalDatas(item);
+                          setLineDetailModalOpen(true);
+                        }}
+                      >
+                        <i className="flaticon2-edit text-sm"></i> Detay
+                      </button>
 
-                    <button className="btn btn-sm btn-text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bold btn-hover-bg-light mr-3">
-                      <i className="flaticon2-trash text-sm"></i> Sil
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                      <button
+                        className="btn btn-sm btn-text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bold btn-hover-bg-light mr-3"
+                        onClick={() => {
+                          Swal.fire({
+                            title: "Satırı Silmek Üzeresiniz!",
+                            text: "Silmek İstediğinize Emin misiniz?",
+                            buttonsStyling: false,
+                            reverseButtons: true,
+                            confirmButtonText: " Evet, Sil!",
+                            showCancelButton: true,
+                            cancelButtonText: " Hayır, İptal",
+                            customClass: {
+                              confirmButton: "btn btn-danger",
+                              cancelButton: "btn btn-default",
+                            },
+                          }).then(function (result) {
+                            if (result.isConfirmed) {
+                              lineDelete(item.Sira);
+                            }
+                          });
+                        }}
+                      >
+                        <i className="flaticon2-trash text-sm"></i> Sil
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
             <tfoot>
               <tr>
@@ -472,15 +535,22 @@ export const OfferContents = () => {
               </tr>
             </tfoot>
           </table>
-          <Modal centered>
+          <Modal centered show={lineDetailModalOpen}>
             <Modal.Header>
               <Modal.Title>Detay</Modal.Title>
-              <button type="button" className="close ml-4" onClick={() => {}}>
+              <button
+                type="button"
+                className="close ml-4"
+                onClick={() => setLineDetailModalOpen(false)}
+              >
                 <i aria-hidden="true" className="ki ki-close" />
               </button>
             </Modal.Header>
             <Modal.Body>
-              <LineDetails />
+              <LineDetails
+                lineDatas={lineModalDatas}
+                setLineDetails={(e) => console.log(e)}
+              />
             </Modal.Body>
           </Modal>
         </>
@@ -497,6 +567,10 @@ export const OfferContents = () => {
               parentClass="col-md-10"
               value={descInput}
               onChange={(e) => setDescInput(e.target.value)}
+              onKeyPress={(e) =>
+                e.code === "Enter" ||
+                (e.code === "NumpadEnter" && addToDescription())
+              }
             />
             <div className=" col-md-2 pt-8">
               <Button
@@ -536,7 +610,27 @@ export const OfferContents = () => {
                         <i className="flaticon2-edit text-sm" /> Düzenle
                       </button>
 
-                      <button className="btn btn-sm btn-text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bold btn-hover-bg-light mr-3">
+                      <button
+                        className="btn btn-sm btn-text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bold btn-hover-bg-light mr-3"
+                        onClick={() => {
+                          Swal.fire({
+                            title: "Açıklamayı Silmek Üzeresiniz!",
+                            text: "Silmek İstediğinize Emin misiniz?",
+                            buttonsStyling: false,
+                            reverseButtons: true,
+                            confirmButtonText: " Evet, Sil!",
+                            showCancelButton: true,
+                            cancelButtonText: " Hayır, İptal",
+                            customClass: {
+                              confirmButton: "btn btn-danger",
+                              cancelButton: "btn btn-default",
+                            },
+                          }).then(
+                            (result) =>
+                              result.isConfirmed && descriptionDelete(item.Sira)
+                          );
+                        }}
+                      >
                         <i className="flaticon2-trash text-sm" /> Sil
                       </button>
                     </td>

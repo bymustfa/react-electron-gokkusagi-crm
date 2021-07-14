@@ -55,6 +55,16 @@ export const getCustomers = async () => {
     ? customers.data.Veri
     : [];
 };
+
+export const getCustomerUsers = async (customerId) => {
+  const users = await axios.get(
+    process.env.REACT_APP_API_URL + "Musteri/GetMusteriKisiler?Id=" + customerId
+  );
+  return users.status === 200 && users.data.SonucTipi === 1
+    ? users.data.Veri
+    : [];
+};
+
 export const getCustomerAddress = async (customerId) => {
   const address = await axios.get(
     process.env.REACT_APP_API_URL +

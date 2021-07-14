@@ -31,13 +31,31 @@ export const slice = createSlice({
       state.Satirlar = [action.payload, ...state.Satirlar];
     },
 
+    setLinesDelete: (state, action) => {
+      state.Satirlar = [...state.Satirlar].filter(
+        (x) => x.Sira !== action.payload
+      );
+    },
+
     setDescriptionAdd: (state, action) => {
       state.Aciklamalar = [action.payload, ...state.Aciklamalar];
+    },
+
+    setDescriptionDelete: (state, action) => {
+      state.Aciklamalar = [...state.Aciklamalar].filter(
+        (x) => x.Sira !== action.payload
+      );
     },
   },
 });
 
-export const { setOfferState, setLinesAdd, setDescriptionAdd } = slice.actions;
+export const {
+  setOfferState,
+  setLinesAdd,
+  setLinesDelete,
+  setDescriptionAdd,
+  setDescriptionDelete,
+} = slice.actions;
 
 export const SelectOffers = (state) => state.offers;
 

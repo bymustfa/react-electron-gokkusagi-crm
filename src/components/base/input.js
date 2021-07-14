@@ -15,6 +15,7 @@ export default function Input({
   min = 0,
   max = null,
   step = null,
+  onKeyPress = null,
 }) {
   const [inputValue, setInputValue] = useState(value);
 
@@ -32,6 +33,7 @@ export default function Input({
           className={cn(["form-control", childClass])}
           rows={rows}
           value={inputValue}
+          onKeyPress={(e) => onKeyPress && onKeyPress(e)}
         />
       </div>
     );
@@ -47,6 +49,7 @@ export default function Input({
           onChange={onChange}
           disabled={disabled}
           value={inputValue}
+          onKeyPress={(e) => onKeyPress && onKeyPress(e)}
         />
       </div>
     );
@@ -65,6 +68,7 @@ export default function Input({
           min={min}
           max={max}
           step={step}
+          onKeyPress={(e) => onKeyPress && onKeyPress(e)}
         />
       </div>
     );
@@ -80,6 +84,7 @@ export default function Input({
           onChange={onChange}
           disabled={disabled}
           value={inputValue}
+          onKeyPress={(e) => onKeyPress && onKeyPress(e)}
         />
       </div>
     );

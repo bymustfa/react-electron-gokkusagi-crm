@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { OverlayTrigger, Tooltip, Modal } from "react-bootstrap";
-import { SpeedCustomerForm } from "./index";
+import { SpeedCustomerForm, SpeedActiviteForm } from "./index";
 
 export default function StickyToolbar() {
-  const [customerSpeedModalOpen, setSustomerSpeedModalOpen] = useState(false);
+  const [customerSpeedModalOpen, setCustomerSpeedModalOpen] = useState(false);
+  const [activiteSpeedModalOpen, setActiviteSpeedModalOpen] = useState(false);
   return (
     <>
       <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-3 mt-4">
         <li
           className="nav-item mb-2"
-          onClick={() => setSustomerSpeedModalOpen(true)}
+          onClick={() => setCustomerSpeedModalOpen(true)}
         >
           <OverlayTrigger
             placement="left"
@@ -21,7 +22,10 @@ export default function StickyToolbar() {
           </OverlayTrigger>
         </li>
 
-        <li className="nav-item mb-2">
+        <li
+          className="nav-item mb-2"
+          onClick={() => setActiviteSpeedModalOpen(true)}
+        >
           <OverlayTrigger
             placement="left"
             overlay={<Tooltip id={`tooltip-2`}>Hızlı Aktivite Girişi</Tooltip>}
@@ -50,13 +54,29 @@ export default function StickyToolbar() {
           <button
             type="button"
             className="close ml-4"
-            onClick={() => setSustomerSpeedModalOpen(false)}
+            onClick={() => setCustomerSpeedModalOpen(false)}
           >
             <i aria-hidden="true" className="ki ki-close" />
           </button>
         </Modal.Header>
         <Modal.Body>
           <SpeedCustomerForm />
+        </Modal.Body>
+      </Modal>
+
+      <Modal size="lg" show={activiteSpeedModalOpen} centered>
+        <Modal.Header>
+          <Modal.Title>Hızlı Aktivite</Modal.Title>
+          <button
+            type="button"
+            className="close ml-4"
+            onClick={() => setActiviteSpeedModalOpen(false)}
+          >
+            <i aria-hidden="true" className="ki ki-close" />
+          </button>
+        </Modal.Header>
+        <Modal.Body>
+          <SpeedActiviteForm />
         </Modal.Body>
       </Modal>
     </>

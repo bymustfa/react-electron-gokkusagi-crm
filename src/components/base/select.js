@@ -16,12 +16,16 @@ export default function SelectBox({
   const [multiValues, setMultiValues] = useState("");
   const [focus, setFocus] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [tagify, setTagify] = useState(null);
+
   const randomId = "tagfy_" + Math.floor(Math.random() * 99999);
 
   useEffect(() => {
     if (multi) {
+      setMultiValues(selected == "" ? [] : selected);
       const input = document.querySelector("#" + randomId);
-      const tagify = new Tagify(input, {
+
+      let tag = new Tagify(input, {
         tagTextProp: "name",
         enforceWhitelist: true,
         maxTags: 10,
@@ -52,15 +56,20 @@ export default function SelectBox({
           },
         },
       });
+      setTagify(tag);
     }
   }, [multi]);
 
   useEffect(() => {
-    if (multi) {
-      console.log(selected);
+    if (multi && tagify) {
+      tagify.removeAllTags();
+      tagify.settings.whitelist = options;
+    }
+  }, [options]);
 
-      setMultiValues(selected);
-      console.log("multiValues: ", multiValues, "selected: ", selected);
+  useEffect(() => {
+    if (multi) {
+      setMultiValues(selected == "" ? [] : selected);
     } else {
       setOptionDatas(options);
       if (!selected) {
@@ -105,14 +114,14 @@ export default function SelectBox({
       {multi ? (
         <input
           type="text"
-          className="form-control selectMode tagify"
+          className="tagify form-control selectMode "
           id={randomId}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           defaultValue={multiValues}
         />
       ) : (
-        <div className=" search-box ">
+        <div className=" search-box position-relative">
           <label>
             <div className="search-input">
               <input
@@ -130,57 +139,75 @@ export default function SelectBox({
                 <i className="fas fa-angle-down" />
               </span>
             </div>
-            {/*{multi ? (*/}
-            {/*  <div className="multi-area">*/}
-            {/*    <div className="tagify  w-100 border rounded h-100   multi">*/}
-            {/*      <tag*/}
-            {/*        title="html"*/}
-            {/*        contenteditable="false"*/}
-            {/*        spellcheck="false"*/}
-            {/*        tabindex="-1"*/}
-            {/*        className="tagify__tag tagify--noAnim"*/}
-            {/*        role="tag"*/}
-            {/*        __isvalid="true"*/}
-            {/*        value="html"*/}
-            {/*      >*/}
-            {/*        <div>*/}
-            {/*          <span className="tagify__tag-text">html</span>*/}
-            {/*        </div>*/}
-            {/*        <x*/}
-            {/*          title=""*/}
-            {/*          className="tagify__tag__removeBtn"*/}
-            {/*          role="button"*/}
-            {/*          aria-label="remove tag"*/}
-            {/*        />*/}
-            {/*      </tag>*/}
-            {/*    </div>*/}
-            {/*    <span>*/}
-            {/*      <i className="fas fa-angle-down" />*/}
-            {/*    </span>*/}
-            {/*  </div>*/}
-            {/*) : (*/}
-            {/*  */}
-            {/*)}*/}
           </label>
-          <ul className={cn(["list-area", focus === true ? "show" : "hide"])}>
-            {optionDatas.slice(0, 7).map((x) => (
-              <li
-                onClick={() => {
-                  setSearchText(x.name);
-                  setFocus(false);
-                  onChange(x);
-                }}
-                key={x.value}
+          {focus && (
+            <div>
+              <div
+                className="tagify__dropdown"
+                role="listbox"
+                aria-labelledby="dropdown"
+                placement="bottom"
+                position="all"
+                style={{ width: "100%" }}
               >
-                {x.name}
-              </li>
-            ))}
-            {optionDatas.length > 7 && (
-              <li className="font-weight-bold">
-                + {optionDatas.length - 7} öğe
-              </li>
-            )}
-          </ul>
+                <div className="tagify__dropdown__wrapper">
+                  {optionDatas.slice(0, 7).map((x) => (
+                    <div
+                      name={x.name}
+                      value="2"
+                      className={cn([
+                        "tagify__dropdown__item text-hover-primary bg-hover-light",
+                        selected &&
+                          selected === x.value &&
+                          "text-primary bg-light",
+                      ])}
+                      role="option"
+                      tagifysuggestionidx="0"
+                      key={x.value}
+                      onClick={() => {
+                        setSearchText(x.name);
+                        setFocus(false);
+                        onChange(x);
+                      }}
+                    >
+                      {x.name}
+                    </div>
+                  ))}
+                  {optionDatas.length > 7 && (
+                    <div
+                      name={"+" + optionDatas.length - 7 + "öğe"}
+                      value="2"
+                      className="tagify__dropdown__item "
+                      role="option"
+                      tagifysuggestionidx="0"
+                    >
+                      + {optionDatas.length - 7} öğe
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/*<ul className={cn(["list-area", focus === true ? "show" : "hide"])}>*/}
+          {/*  {optionDatas.slice(0, 7).map((x) => (*/}
+          {/*    <li*/}
+          {/*      onClick={() => {*/}
+          {/*        setSearchText(x.name);*/}
+          {/*        setFocus(false);*/}
+          {/*        onChange(x);*/}
+          {/*      }}*/}
+          {/*      key={x.value}*/}
+          {/*    >*/}
+          {/*      {x.name}*/}
+          {/*    </li>*/}
+          {/*  ))}*/}
+          {/*  {optionDatas.length > 7 && (*/}
+          {/*    <li className="font-weight-bold">*/}
+          {/*      + {optionDatas.length - 7} öğe*/}
+          {/*    </li>*/}
+          {/*  )}*/}
+          {/*</ul>*/}
         </div>
       )}
 

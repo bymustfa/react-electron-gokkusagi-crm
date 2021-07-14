@@ -1,10 +1,19 @@
 import React, { useState } from "react";
-import { Layout, CardHeader, Tabs } from "../components/partials";
 import { Button, LiteTable, SelectBox, Input } from "../components/base";
+import {
+  Layout,
+  CardHeader,
+  Tabs,
+  ActiviteNormalForm,
+} from "../components/partials";
 import Modal from "react-bootstrap/Modal";
 
 export default function ActivitiesPage() {
   const [visitAddModalShow, setVisitAddModalShow] = useState(false);
+  const [visitDatas, setVisitDatas] = useState({
+    AktiviteTipi: 0,
+  });
+
   return (
     <Layout>
       <CardHeader
@@ -49,98 +58,8 @@ export default function ActivitiesPage() {
           </button>
         </Modal.Header>
         <Modal.Body>
-          <div className="row">
-            <SelectBox
-              parentClass="col-md-6"
-              label="Aktivite Tipi"
-              selected={""}
-              options={[
-                { value: "", name: "Seçiniz" },
-                { value: 1, name: "Ziyaret" },
-                { value: 2, name: "Toplantı" },
-                { value: 3, name: "Görev" },
-              ]}
-              onChange={(e) => console.log(e)}
-            />
-
-            <SelectBox
-              parentClass="col-md-6"
-              label="Kullanıcı"
-              selected={""}
-              options={[
-                { value: "", name: "Seçiniz" },
-                { value: 1, name: " Kull 1 " },
-                { value: 2, name: " Kull 2 " },
-                { value: 3, name: " Kull 3 " },
-              ]}
-              onChange={(e) => console.log(e)}
-            />
-          </div>
-
-          <div className="row">
-            <SelectBox
-              parentClass="col-md-6"
-              label="Müşteri"
-              selected={""}
-              options={[
-                { value: "", name: "Seçiniz" },
-                { value: 1, name: " Müş 1 " },
-                { value: 2, name: " Müş 2 " },
-                { value: 3, name: " Müş 3 " },
-              ]}
-              onChange={(e) => console.log(e)}
-            />
-
-            <SelectBox
-              parentClass="col-md-6"
-              label="Müşteri Kişiler"
-              selected={""}
-              options={[
-                { value: "", name: "Seçiniz" },
-                { value: 1, name: " Kişi 1 " },
-                { value: 2, name: " Kişi 2 " },
-                { value: 3, name: " Kişi 3 " },
-              ]}
-              onChange={(e) => console.log(e)}
-            />
-          </div>
-
-          <div className="row">
-            <Input
-              parentClass="col-md-6"
-              type="datetime-local"
-              label="Planlanan Başlangıç Tarihi:"
-              onChange={(e) => console.log(e.target.value)}
-            />
-
-            <Input
-              parentClass="col-md-6"
-              type="datetime-local"
-              label="Planlanan Bitiş Tarihi:"
-              onChange={(e) => console.log(e.target.value)}
-            />
-          </div>
-
-          <div className="row">
-            <Input
-              parentClass="col-md-12"
-              label="Konu"
-              placeholder="Konu"
-              onChange={(e) => console.log(e.target.value)}
-            />
-          </div>
-
-          <div className="row">
-            <Input
-              parentClass="col-md-12"
-              label="Açıklama"
-              placeholder="Açıklama"
-              type="textarea"
-              onChange={(e) => console.log(e.target.value)}
-            />
-          </div>
+          <ActiviteNormalForm />
         </Modal.Body>
-        <Modal.Footer className="justify-content-center">Footer</Modal.Footer>
       </Modal>
     </Layout>
   );
