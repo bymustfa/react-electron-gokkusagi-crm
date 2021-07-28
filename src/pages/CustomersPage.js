@@ -94,23 +94,19 @@ export default function CustomersPage() {
   useEffect(() => {
     tableDataCall();
 
-    getProvinces(40).then((datas) =>
-      setProvince([{ value: "", name: "Seçiniz" }, ...datas])
-    );
+    getProvinces(40).then((datas) => setProvince([...datas]));
   }, []);
 
   useCallback(() => {
     if (filterProvince && filterProvince !== undefined) {
-      getDistricts(filterProvince).then((datas) =>
-        setDistrict([{ value: "", name: "Seçiniz" }, ...datas])
-      );
+      getDistricts(filterProvince).then((datas) => setDistrict([...datas]));
     }
   }, [filterProvince]);
 
   useCallback(() => {
     if (filterDistrict && filterDistrict !== undefined) {
       getNeighborhoods(filterDistrict).then((datas) =>
-        setNeighborhood([{ value: "", name: "Seçiniz" }, ...datas])
+        setNeighborhood([...datas])
       );
     }
   }, [filterDistrict]);
@@ -385,11 +381,7 @@ export default function CustomersPage() {
               parentClass="col-md-4"
               label="İlçe"
               selected={""}
-              options={
-                district.length > 0
-                  ? district
-                  : [{ value: "", name: "Seçiniz" }]
-              }
+              options={district.length > 0 ? district : []}
               onChange={(e) => {
                 setFilterDistrict(e.value);
                 setFilterState("Ilce", e.name);
@@ -400,11 +392,7 @@ export default function CustomersPage() {
               parentClass="col-md-4"
               label="Semt"
               selected={""}
-              options={
-                neighborhood.length > 0
-                  ? neighborhood
-                  : [{ value: "", name: "Seçiniz" }]
-              }
+              options={neighborhood.length > 0 ? neighborhood : []}
               onChange={(e) => {
                 setFilterNeighborhood(e.value);
                 setFilterState("Semt", e.name);

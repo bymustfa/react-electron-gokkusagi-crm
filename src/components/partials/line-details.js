@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Input, SelectBox, Button } from "../base";
 import { DiscountInput } from "./index";
 
-export default function LineDetails({ lineDatas, setLineDetails }) {
+export default function LineDetails({ lineDatas, setLineDetails, saveDatas }) {
   const [details, setDetails] = useState(lineDatas);
 
   const [sorumlulukMerkeziId, setSorumlulukMerkeziId] = useState(
@@ -17,6 +17,7 @@ export default function LineDetails({ lineDatas, setLineDetails }) {
       ? lineDatas.Iskonto
       : [{ Tip: "doviz", Iskonto: 0, Sira: 1 }]
   );
+  const [addDiscountBtn, setAddDiscountBtn] = useState(false);
 
   const detailSet = (key, value) => {
     let tmp = { ...details };
@@ -28,22 +29,27 @@ export default function LineDetails({ lineDatas, setLineDetails }) {
     if (discounts.length < 5) {
       const tmp = [
         ...discounts,
-        { Tip: "doviz", Iskonto: 0, Sira: discounts.length + 1 },
+        { Tip: "yuzde", Iskonto: 0, Sira: discounts.length + 1 },
       ];
       setDiscounts(tmp);
     }
   };
 
   const updateDiscount = (values) => {
-    const tmp = discounts.map((data) => {
-      if (values.Sira === data.Sira) {
-        data.Tip = values.Tip;
-        data.Iskonto = values.Iskonto;
-      }
-      return data;
-    });
+    setAddDiscountBtn(values.Tip == "yuzde");
+    if (values.Tip == "doviz") {
+      setDiscounts([{ Tip: "doviz", Iskonto: values.Iskonto, Sira: 1 }]);
+    } else {
+      const tmp = discounts.map((data) => {
+        if (values.Sira === data.Sira) {
+          data.Tip = values.Tip;
+          data.Iskonto = values.Iskonto;
+        }
+        return data;
+      });
 
-    setDiscounts(tmp);
+      setDiscounts(tmp);
+    }
   };
 
   const deleteDiscount = (key) => {
@@ -61,11 +67,9 @@ export default function LineDetails({ lineDatas, setLineDetails }) {
   }, [sorumlulukMerkeziId, projeId, depoId, kdv]);
 
   const detailsSave = () => {
-    console.log("Save Details: ", details);
+    saveDatas(details);
   };
 
-  console.log("details: ", details);
-  console.log("kdv: ", kdv);
   return (
     <>
       <div className="row">
@@ -138,8 +142,8 @@ export default function LineDetails({ lineDatas, setLineDetails }) {
           parentClass="col-md-12"
           type="textarea"
           rows={3}
-          // value={details.Aciklama}
-          // onChange={(e) => detailSet("Aciklama", e.target.value)}
+          value={details.Aciklama}
+          onChange={(e) => detailSet("Aciklama", e.target.value)}
         />
       </div>
 
@@ -161,7 +165,7 @@ export default function LineDetails({ lineDatas, setLineDetails }) {
         );
       })}
 
-      {discounts.length < 5 && (
+      {discounts.length < 5 && addDiscountBtn && (
         <div className="text-center">
           <Button
             type="success"

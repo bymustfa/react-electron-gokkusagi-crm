@@ -80,12 +80,14 @@ export default function DiscountInput({
                 willChange: "transform",
               }}
             >
-              <span
-                className="dropdown-item cursor-pointer"
-                onClick={() => actionSet("doviz")}
-              >
-                {currency}
-              </span>
+              {datas.Sira === 1 && (
+                <span
+                  className="dropdown-item cursor-pointer"
+                  onClick={() => actionSet("doviz")}
+                >
+                  {currency}
+                </span>
+              )}
               <span
                 className="dropdown-item cursor-pointer"
                 onClick={() => actionSet("yuzde")}

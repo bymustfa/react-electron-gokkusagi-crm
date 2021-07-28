@@ -151,28 +151,39 @@ export default function SelectBox({
                 style={{ width: "100%" }}
               >
                 <div className="tagify__dropdown__wrapper">
-                  {optionDatas.slice(0, 7).map((x) => (
+                  {optionDatas.length > 0 ? (
+                    optionDatas.slice(0, 7).map((x) => (
+                      <div
+                        name={x.name}
+                        value="2"
+                        className={cn([
+                          "tagify__dropdown__item text-hover-primary bg-hover-light",
+                          selected &&
+                            selected === x.value &&
+                            "text-primary bg-light",
+                        ])}
+                        role="option"
+                        tagifysuggestionidx="0"
+                        key={x.value}
+                        onClick={() => {
+                          setSearchText(x.name);
+                          setFocus(false);
+                          onChange(x);
+                        }}
+                      >
+                        {x.name}
+                      </div>
+                    ))
+                  ) : (
                     <div
-                      name={x.name}
-                      value="2"
-                      className={cn([
-                        "tagify__dropdown__item text-hover-primary bg-hover-light",
-                        selected &&
-                          selected === x.value &&
-                          "text-primary bg-light",
-                      ])}
+                      name="Öğe Yok"
+                      className="tagify__dropdown__item text-center font-weight-bold "
                       role="option"
                       tagifysuggestionidx="0"
-                      key={x.value}
-                      onClick={() => {
-                        setSearchText(x.name);
-                        setFocus(false);
-                        onChange(x);
-                      }}
                     >
-                      {x.name}
+                      <i className="fas fa-times" /> Öğe Yok
                     </div>
-                  ))}
+                  )}
                   {optionDatas.length > 7 && (
                     <div
                       name={"+" + optionDatas.length - 7 + "öğe"}

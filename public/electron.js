@@ -30,7 +30,8 @@ function createWindow() {
   );
   mainWindow.setMenu(null);
 
-  isDev && mainWindow.webContents.openDevTools();
+  // isDev && mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => (mainWindow = null));
 }
 

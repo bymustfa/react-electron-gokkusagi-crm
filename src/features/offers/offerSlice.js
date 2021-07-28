@@ -30,6 +30,9 @@ export const slice = createSlice({
     setLinesAdd: (state, action) => {
       state.Satirlar = [action.payload, ...state.Satirlar];
     },
+    setLinesChange: (state, action) => {
+      state.Satirlar = [...action.payload];
+    },
 
     setLinesDelete: (state, action) => {
       state.Satirlar = [...state.Satirlar].filter(
@@ -53,6 +56,7 @@ export const {
   setOfferState,
   setLinesAdd,
   setLinesDelete,
+  setLinesChange,
   setDescriptionAdd,
   setDescriptionDelete,
 } = slice.actions;

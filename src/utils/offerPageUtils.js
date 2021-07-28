@@ -13,8 +13,9 @@ import {
   setOfferState,
   setLinesAdd,
   setLinesDelete,
-  setDescriptionAdd,
+  setLinesChange,
   setDescriptionDelete,
+  setDescriptionAdd,
   SelectOffers,
 } from "../features/offers/offerSlice";
 
@@ -58,6 +59,7 @@ export const OfferContents = () => {
     Iskonto: [],
   });
   const [total, setTotal] = useState(0);
+  const [currency, setCurrency] = useState("TL");
 
   const [customers, setCustomer] = useState([]);
   const [customerAddress, setCustomerAddress] = useState([]);
@@ -68,12 +70,26 @@ export const OfferContents = () => {
 
   const [descInput, setDescInput] = useState("");
   const [descriptions, setDescriptions] = useState([]);
+  const [linesFooter, setLinesFooter] = useState({
+    AraTutar: 0,
+    ToplamIskonto: 0,
+    IskontoSonrasiTutar: 0,
+    KdvTutar: 0,
+    GenelTutar: 0,
+  });
 
   useEffect(() => {
-    getCustomers().then((x) =>
-      setCustomer([{ value: "", name: "Seçiniz" }, ...x])
-    );
+    getCustomers().then((x) => setCustomer([...x]));
   }, []);
+
+  useEffect(() => {
+    setLines(offerDatas.Satirlar);
+    console.log("Redux Satılar Değişti: ", offerDatas.Satirlar);
+  }, [offerDatas.Satirlar]);
+
+  useEffect(() => {
+    setDescriptions(offerDatas.Aciklamalar);
+  }, [offerDatas.Aciklamalar]);
 
   const stockCalc = () => {
     const toplam = parseFloat(
@@ -91,6 +107,94 @@ export const OfferContents = () => {
     tmp[key] = value;
     setStockOnfos({ ...tmp });
     stockCalc();
+  };
+
+  const descriptionDelete = (key) => dispatch(setDescriptionDelete(key));
+
+  const addToDescription = () => {
+    if (descInput.trim().length === 0) {
+      addToast("Açıklama Giriniz", {
+        appearance: "info",
+        autoDismiss: true,
+      });
+    } else {
+      let sira = offerDatas.Aciklamalar.length + 1;
+      dispatch(setDescriptionAdd({ Aciklama: descInput, Sira: sira }));
+      setDescInput("");
+    }
+  };
+
+  const offerSetData = (key, value) => dispatch(setOfferState({ key, value }));
+
+  const getAdress = (customerId) =>
+    customerId &&
+    getCustomerAddress(customerId).then((x) => setCustomerAddress([...x]));
+
+  const lineChangeSave = (datas = null) => {
+    let tmpLines = offerDatas.Satirlar.map((line) =>
+      datas && line.Sira === datas.Sira ? { ...datas } : { ...line }
+    );
+    console.log("tmpLines: ", tmpLines);
+    let araTutar = 0;
+    let kdvTutar = 0;
+    let genelTutar = 0;
+
+    let toplamIsnkontoDoviz = 0;
+    let toplamIsnkontoYuzde = 0;
+
+    let yuzdeIcınBirimFiyat = 0;
+
+    tmpLines = tmpLines.map((satir) => {
+      yuzdeIcınBirimFiyat += satir.BirimFiyat * satir.Miktar;
+      if (satir.Iskonto.length > 0) {
+        let toplam = satir.BirimFiyat * satir.Miktar;
+        satir.Iskonto.map((iskonto) => {
+          if (iskonto.Tip === "doviz") {
+            satir.Toplam = satir.BirimFiyat * satir.Miktar - iskonto.Iskonto;
+            toplamIsnkontoDoviz += iskonto.Iskonto;
+            toplamIsnkontoYuzde +=
+              (iskonto.Iskonto / (satir.BirimFiyat * satir.Miktar)) * 100;
+          } else {
+            let yuzdeHesap = (toplam / 100) * iskonto.Iskonto;
+            toplamIsnkontoYuzde += iskonto.Iskonto;
+            toplam -= yuzdeHesap;
+            toplamIsnkontoDoviz += yuzdeHesap;
+            satir.Toplam = toplam;
+          }
+        });
+      }
+
+      araTutar += satir.Toplam;
+      kdvTutar += (satir.Toplam * satir.Kdv) / 100;
+
+      return satir;
+    });
+
+    let yuzdeOran = 0;
+
+    if (yuzdeIcınBirimFiyat != araTutar) {
+      yuzdeOran =
+        ((yuzdeIcınBirimFiyat - araTutar) / yuzdeIcınBirimFiyat) * 100;
+    }
+
+    genelTutar = araTutar + kdvTutar;
+    setLines(tmpLines);
+
+    let tmpFooterLines = linesFooter;
+
+    tmpFooterLines.AraTutar = formatMoney(araTutar) + " " + currency;
+    tmpFooterLines.ToplamIskonto = `${formatMoney(
+      toplamIsnkontoDoviz
+    )} ${currency} | %  ${formatMoney(yuzdeOran)}`;
+    tmpFooterLines.IskontoSonrasiTutar = formatMoney(araTutar) + " " + currency;
+    tmpFooterLines.KdvTutar = formatMoney(kdvTutar) + " " + currency;
+    tmpFooterLines.GenelTutar = formatMoney(genelTutar) + " " + currency;
+
+    setLinesFooter(tmpFooterLines);
+
+    setLineDetailModalOpen(false);
+
+    // dispatch(setLinesChange(tmpLines));
   };
 
   const addToListStock = () => {
@@ -121,44 +225,14 @@ export const OfferContents = () => {
         Aciklama: "",
         Iskonto: [],
       });
-
       setTotal(0);
+      lineChangeSave();
     }
   };
 
-  const lineDelete = (key) => dispatch(setLinesDelete(key));
-  const descriptionDelete = (key) => dispatch(setDescriptionDelete(key));
-
-  useEffect(() => {
-    setLines(offerDatas.Satirlar);
-  }, [offerDatas.Satirlar]);
-
-  const addToDescription = () => {
-    console.log(descInput);
-    if (descInput.trim().length === 0) {
-      addToast("Açıklama Giriniz", {
-        appearance: "info",
-        autoDismiss: true,
-      });
-    } else {
-      let sira = offerDatas.Aciklamalar.length + 1;
-      dispatch(setDescriptionAdd({ Aciklama: descInput, Sira: sira }));
-      setDescInput("");
-    }
-  };
-
-  useEffect(() => {
-    setDescriptions(offerDatas.Aciklamalar);
-  }, [offerDatas.Aciklamalar]);
-
-  const offerSetData = (key, value) => {
-    dispatch(setOfferState({ key, value }));
-  };
-  const getAdress = (customerId) => {
-    if (customerId)
-      getCustomerAddress(customerId).then((x) =>
-        setCustomerAddress([{ value: "", name: "Seçiniz" }, ...x])
-      );
+  const lineDelete = (key) => {
+    dispatch(setLinesDelete(key));
+    lineChangeSave();
   };
 
   return [
@@ -183,7 +257,7 @@ export const OfferContents = () => {
               parentClass="col-md-4"
               label="Teslim Tipi"
               placeholder="Seçiniz"
-              options={[{ value: "", name: "Seçiniz" }]}
+              options={[]}
               selected={offerDatas.TeslimTipiId}
               onChange={(e) =>
                 offerSetData("TeslimTipiId", e?.value ? e.value : "")
@@ -235,7 +309,7 @@ export const OfferContents = () => {
               parentClass="col-md-4"
               label="Sorumluluk Merkezi"
               placeholder="Seçiniz"
-              options={[{ value: "", name: "Seçiniz" }]}
+              options={[]}
               selected={offerDatas.SorumlulukMerkeziId}
               onChange={(e) =>
                 offerSetData("SorumlulukMerkeziId", e?.value ? e.value : "")
@@ -246,7 +320,7 @@ export const OfferContents = () => {
               parentClass="col-md-4"
               label="Proje Kodu"
               placeholder="Seçiniz"
-              options={[{ value: "", name: "Seçiniz" }]}
+              options={[]}
               selected={offerDatas.ProjeId}
               onChange={(e) => offerSetData("ProjeId", e?.value ? e.value : "")}
             />
@@ -255,7 +329,7 @@ export const OfferContents = () => {
               parentClass="col-md-4"
               label="Depo"
               placeholder="Seçiniz"
-              options={[{ value: "", name: "Seçiniz" }]}
+              options={[]}
               selected={offerDatas.DepoId}
               onChange={(e) => offerSetData("DepoId", e?.value ? e.value : "")}
             />
@@ -266,7 +340,7 @@ export const OfferContents = () => {
               parentClass="col-md-4"
               label="Para Birimi"
               placeholder="Seçiniz"
-              options={[{ value: "", name: "Seçiniz" }]}
+              options={[]}
               selected={offerDatas.ParaBirimiId}
               onChange={(e) =>
                 offerSetData("ParaBirimiId", e?.value ? e.value : "")
@@ -289,7 +363,7 @@ export const OfferContents = () => {
               parentClass="col-md-4"
               label="Satıcı"
               placeholder="Seçiniz"
-              options={[{ value: "", name: "Seçiniz" }]}
+              options={[]}
               selected={offerDatas.SaticiId}
               onChange={(e) =>
                 offerSetData("SaticiId", e?.value ? e.value : "")
@@ -373,16 +447,9 @@ export const OfferContents = () => {
               disabled
               label="Toplam"
               placeholder="Toplam"
-              type="number"
+              type="text"
               parentClass="col-md-2"
-              value={total}
-              min={0}
-              max={1000}
-              step={0.01}
-              onKeyPress={(e) =>
-                e.code === "Enter" ||
-                (e.code === "NumpadEnter" && addToListStock())
-              }
+              value={formatMoney(total)}
             />
 
             <div className=" col-md-2 pt-8">
@@ -477,7 +544,7 @@ export const OfferContents = () => {
                   <b>Ara Tutar:</b>
                 </td>
                 <td className="text-right">
-                  <b>1</b>
+                  <b>{linesFooter.AraTutar}</b>
                 </td>
                 <td></td>
               </tr>
@@ -490,7 +557,7 @@ export const OfferContents = () => {
                   <b>Toplam İskonto:</b>
                 </td>
                 <td className="text-right">
-                  <b>1</b>
+                  <b>{linesFooter.ToplamIskonto}</b>
                 </td>
                 <td></td>
               </tr>
@@ -503,7 +570,7 @@ export const OfferContents = () => {
                   <b>İskonto Sonrası Tutar:</b>
                 </td>
                 <td className="text-right">
-                  <b>1</b>
+                  <b>{linesFooter.IskontoSonrasiTutar}</b>
                 </td>
                 <td></td>
               </tr>
@@ -516,7 +583,7 @@ export const OfferContents = () => {
                   <b>KDV Tutar:</b>
                 </td>
                 <td className="text-right">
-                  <b>1</b>
+                  <b>{linesFooter.KdvTutar}</b>
                 </td>
                 <td></td>
               </tr>
@@ -529,7 +596,7 @@ export const OfferContents = () => {
                   <b>Genel Tutar:</b>
                 </td>
                 <td className="text-right">
-                  <b>1</b>
+                  <b>{linesFooter.GenelTutar}</b>
                 </td>
                 <td></td>
               </tr>
@@ -550,6 +617,7 @@ export const OfferContents = () => {
               <LineDetails
                 lineDatas={lineModalDatas}
                 setLineDetails={(e) => console.log(e)}
+                saveDatas={lineChangeSave}
               />
             </Modal.Body>
           </Modal>
@@ -560,6 +628,7 @@ export const OfferContents = () => {
       id: 3,
       content: (
         <>
+          {/* TODO: açıklama düzenleme yapılacak */}
           <div className="row">
             <Input
               label="Açıklama"

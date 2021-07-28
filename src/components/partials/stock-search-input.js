@@ -42,6 +42,7 @@ export default function StockSearchInput({
         <label>Stok</label>
         <div className="input-group">
           <input
+            disabled={stockSearchLoading}
             type="text"
             className="form-control"
             placeholder="Stok"
@@ -96,8 +97,8 @@ export default function StockSearchInput({
                 </li>
               ))
             ) : (
-              <li className="text-center no-data">
-                <i className="fas fa-times" /> <b>Sonuç Yok</b>{" "}
+              <li className="text-center no-data font-weight-bold">
+                <i className="fas fa-times" /> Sonuç Yok
               </li>
             )}
           </ul>

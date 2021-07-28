@@ -4,9 +4,17 @@ import { Button } from "../components/base";
 import { Layout, CardHeader, Tabs } from "../components/partials";
 import { OffersTabs, OfferContents } from "../utils/offerPageUtils";
 
+import { SelectOffers } from "../features/offers/offerSlice";
+import { useSelector } from "react-redux";
+
 export default function OffersPage() {
+  const offerDatas = useSelector(SelectOffers);
   const [offersModalOpen, setOpenModalShow] = useState(false);
   const offerContents = OfferContents();
+
+  const offerSave = () => {
+    console.log("Teklifi Kaydet: ", offerDatas);
+  };
 
   return (
     <Layout>
@@ -52,7 +60,7 @@ export default function OffersPage() {
               icon={<i className="far fa-save" />}
               className="btn-sm"
               key={1}
-              onClick={() => console.log("Kaydet")}
+              onClick={() => offerSave()}
             />,
           ]}
         />
