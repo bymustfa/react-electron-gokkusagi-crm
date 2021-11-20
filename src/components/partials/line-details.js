@@ -66,9 +66,7 @@ export default function LineDetails({ lineDatas, setLineDetails, saveDatas }) {
     detailSet("Kdv", kdv);
   }, [sorumlulukMerkeziId, projeId, depoId, kdv]);
 
-  const detailsSave = () => {
-    saveDatas(details);
-  };
+  const detailsSave = () => saveDatas(details);
 
   return (
     <>

@@ -78,14 +78,16 @@ export const OfferContents = () => {
     GenelTutar: 0,
   });
 
+  // const []
+
   useEffect(() => {
     getCustomers().then((x) => setCustomer([...x]));
   }, []);
 
   useEffect(() => {
-    setLines(offerDatas.Satirlar);
-    console.log("Redux Satılar Değişti: ", offerDatas.Satirlar);
-  }, [offerDatas.Satirlar]);
+    dispatch(setLinesChange(lines));
+    lineChangeSave();
+  }, [lines]);
 
   useEffect(() => {
     setDescriptions(offerDatas.Aciklamalar);
@@ -131,17 +133,16 @@ export const OfferContents = () => {
     getCustomerAddress(customerId).then((x) => setCustomerAddress([...x]));
 
   const lineChangeSave = (datas = null) => {
-    let tmpLines = offerDatas.Satirlar.map((line) =>
+    let tmpLines = lines.map((line) =>
       datas && line.Sira === datas.Sira ? { ...datas } : { ...line }
     );
-    console.log("tmpLines: ", tmpLines);
+
     let araTutar = 0;
     let kdvTutar = 0;
     let genelTutar = 0;
 
     let toplamIsnkontoDoviz = 0;
     let toplamIsnkontoYuzde = 0;
-
     let yuzdeIcınBirimFiyat = 0;
 
     tmpLines = tmpLines.map((satir) => {
@@ -171,17 +172,14 @@ export const OfferContents = () => {
     });
 
     let yuzdeOran = 0;
-
-    if (yuzdeIcınBirimFiyat != araTutar) {
+    if (yuzdeIcınBirimFiyat !== araTutar) {
       yuzdeOran =
         ((yuzdeIcınBirimFiyat - araTutar) / yuzdeIcınBirimFiyat) * 100;
     }
 
     genelTutar = araTutar + kdvTutar;
-    setLines(tmpLines);
 
     let tmpFooterLines = linesFooter;
-
     tmpFooterLines.AraTutar = formatMoney(araTutar) + " " + currency;
     tmpFooterLines.ToplamIskonto = `${formatMoney(
       toplamIsnkontoDoviz
@@ -191,10 +189,8 @@ export const OfferContents = () => {
     tmpFooterLines.GenelTutar = formatMoney(genelTutar) + " " + currency;
 
     setLinesFooter(tmpFooterLines);
-
     setLineDetailModalOpen(false);
-
-    // dispatch(setLinesChange(tmpLines));
+    dispatch(setLinesChange(tmpLines));
   };
 
   const addToListStock = () => {
@@ -207,7 +203,10 @@ export const OfferContents = () => {
       let sira = offerDatas.Satirlar.length + 1;
       const tmp = stockInfos;
       tmp.Sira = sira;
-      dispatch(setLinesAdd(tmp));
+
+      const tmpLines = [...lines];
+      tmpLines.push(tmp);
+      setLines(tmpLines);
       setStockSearchText("");
       setStockOnfos({
         Sira: 0,
@@ -226,13 +225,13 @@ export const OfferContents = () => {
         Iskonto: [],
       });
       setTotal(0);
-      lineChangeSave();
     }
   };
 
   const lineDelete = (key) => {
-    dispatch(setLinesDelete(key));
-    lineChangeSave();
+    const tmp = [...lines];
+    tmp.filter((x) => x.Sira !== key);
+    setLines(tmp);
   };
 
   return [
@@ -478,8 +477,7 @@ export const OfferContents = () => {
               </tr>
             </thead>
             <tbody className="border border-2">
-              {lines
-                .slice()
+              {offerDatas.Satirlar.slice()
                 .sort((a, b) => {
                   if (a.Sira > b.Sira) return 1;
                   if (a.Sira < b.Sira) return -1;
