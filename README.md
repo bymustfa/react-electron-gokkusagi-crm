@@ -7,4 +7,4 @@ Projeyi geliştirmeye devam etmek için:
 - Ardından `.env.example` dosyasını farklı kaydet ve `.env` adında oluştur
 - `.env` içindeki değişkenleri doldur
 - Geliştirici modunda çalıştırmak için `yarn dev` veya `npm dev` komutu
-- Geliştirme işi bitince build almak için `yarn build` veya `npm build` komutu. İşlem bittiğinde ana dizine `build` adında klasör oluşur bu klasorü web versiyonu için kullan
+- Geliştirme işi bitince build almak için `yarn build` veya `npm build` komutu. İşlem bittiğinde ana dizine `build` adından klasör oluşur bu klasorü web versiyonu için kullan
